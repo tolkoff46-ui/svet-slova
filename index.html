@@ -43,17 +43,15 @@
         .bot-sec-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: var(--accent); margin-top: 14px; margin-bottom: 6px; }
         .bot-sec-title:first-child { margin-top: 0; }
         .bot-quote-box { font-family: Georgia, serif; font-style: italic; background: var(--bg-main); border-left: 3px solid var(--accent); padding: 10px 12px; border-radius: 6px; margin: 4px 0; color: var(--text-primary); }
-        .chat-input-bar { display: flex; gap: 8px; margin-top: 12px; }
+        .depth-toggle { display: flex; gap: 8px; margin-bottom: 10px; }
+        .depth-btn { flex: 1; padding: 8px; border-radius: 12px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-secondary); font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+        .depth-btn.active { background: var(--accent-light); color: var(--accent); border-color: var(--accent); font-weight: 600; }
+        .chat-input-bar { display: flex; gap: 8px; }
         .chat-input-bar input { flex: 1; padding: 12px 14px; border: 1px solid var(--border); border-radius: 12px; background: var(--bg-card); font-size: 15px; outline: none; }
         .chat-input-bar button { background: var(--accent); color: white; border: none; border-radius: 12px; padding: 0 18px; font-weight: 600; cursor: pointer; }
         .diary-question { background: var(--accent-light); padding: 14px; border-radius: 12px; font-size: 14px; line-height: 1.45; margin-bottom: 14px; }
         .saved-note { background: var(--bg-card); border: 1px solid var(--border); padding: 14px; border-radius: 12px; margin-top: 12px; font-size: 14px; }
         .saved-note-date { font-size: 11px; color: var(--text-secondary); margin-bottom: 6px; }
-        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 50; align-items: center; justify-content: center; padding: 20px; }
-        .modal-overlay.open { display: flex; }
-        .modal-box { background: var(--bg-card); width: 100%; max-width: 400px; border-radius: 18px; padding: 22px; }
-        .field-label { display: block; font-size: 12px; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px; margin-top: 12px; }
-        .field-input { width: 100%; padding: 11px 12px; border: 1px solid var(--border); border-radius: 10px; font-size: 14px; outline: none; }
         nav { position: fixed; bottom: 0; width: 100%; max-width: 480px; background: var(--bg-card); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 10px 0 14px; z-index: 20; }
         .nav-item { background: none; border: none; display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--text-secondary); font-size: 11px; cursor: pointer; }
         .nav-item.active { color: var(--accent); font-weight: 600; }
@@ -64,7 +62,7 @@
     <div class="app-container">
     <header>
         <div class="logo"><div class="logo-icon">✦</div><span>Свет Слова</span></div>
-        <button class="icon-btn" onclick="openSettings()">⚙ Настройки ИИ</button>
+        <button class="icon-btn" onclick="alert('Чтобы установить приложение на рабочий стол телефона:\n\n• На iPhone: нажмите «Поделиться» внизу экрана Safari → «На экран «Домой»».\n• На Android: нажмите три точки в правом верхнем углу Chrome → «Добавить на главный экран».')">+ На экран</button>
     </header>
     <main>
         <div id="screen-home" class="screen active">
@@ -89,6 +87,10 @@
             <div class="chat-messages" id="chat-box">
                 <div class="msg msg-bot">Мир вам. Расскажите о том, что вас тревожит, и мы вместе поищем опору в Священном Писании и святоотеческих творениях.</div>
             </div>
+            <div class="depth-toggle">
+                <button class="depth-btn active" id="btn-short" onclick="setDepth('short')">Кратко (быстрая опора)</button>
+                <button class="depth-btn" id="btn-deep" onclick="setDepth('deep')">Глубоко (подробный разбор)</button>
+            </div>
             <div class="chat-input-bar">
                 <input type="text" id="chat-input" placeholder="Напишите ваш вопрос..." onkeypress="if(event.key==='Enter') sendMessage()">
                 <button onclick="sendMessage()">→</button>
@@ -108,36 +110,29 @@
         <button class="nav-item" id="nav-chat" onclick="switchTab('chat')"><span class="nav-icon">✉</span><span>Помощник</span></button>
         <button class="nav-item" id="nav-diary" onclick="switchTab('diary')"><span class="nav-icon">✎</span><span>Дневник</span></button>
     </nav>
-</div>
-<div class="modal-overlay" id="settings-modal">
-    <div class="modal-box">
-        <div class="section-title">Настройки подключения ИИ</div>
-        <label class="field-label">Базовый URL</label>
-        <input type="text" id="cfg-url" class="field-input" value="https://vsegpt.ru">
-        <label class="field-label">Модель</label>
-        <input type="text" id="cfg-model" class="field-input" value="openai/gpt-4o-mini">
-        <label class="field-label">API-ключ (sk-or-vv-...)</label>
-        <input type="password" id="cfg-key" class="field-input" placeholder="Вставьте ваш ключ сюда">
-        <div style="display: flex; gap: 10px; margin-top: 18px;">
-            <button class="primary-btn" onclick="saveSettings()">Сохранить</button>
-            <button class="icon-btn" style="padding: 14px 18px; border-radius: 14px;" onclick="closeSettings()">Закрыть</button>
-        </div>
     </div>
-</div>
-<script>
-    const SYSTEM_PROMPT = `Ты — строгий, трезвый и любящий православный наставник, знаток Священного Писания и святоотеческих творений. Пиши исключительно на чистом русском языке, без иностранных слов, без психологической «воды», общих фраз и витиеватых вступлений. Говори прямо, ясно и по существу.
+   <script>
+    let currentDepth = 'short';
+
+    const BASE_PROMPT = `Ты — строгий, трезвый и любящий православный наставник, знаток Священного Писания и святоотеческих творений. Пиши исключительно на чистом русском языке, без иностранных слов, без психологической «воды» и витиеватых вступлений. Говори прямо, ясно и по существу.
 
 Опирайся строго на православный канон, не выдумывай цитаты и названия книг. Всегда соблюдай структуру ответа из 3 разделов с точными метками:
 
 [ПОДДЕРЖКА]
-Краткое, трезвое и ободряющее слово без лишних сантиментов (1-2 емких предложения по сути ситуации).
+Краткое, трезвое и ободряющее слово без лишних сантиментов.
 
 [ПИСАНИЕ]
-Точная цитата из Синодального перевода Библии в кавычках с обязательным указанием книги, главы и стиха (например: «...» — Евангелие от Матфея, гл. 6, ст. 34).
+Точная цитата из Синодального перевода Библии в кавычках с обязательным указанием книги, главы и стиха.
 
 [ТОЛКОВАНИЕ]
-1. Прямая цитата или точная мысль святого отца по этой теме с обязательным указанием его имени и точного источника — названия книги, беседы или письма (например: свт. Феофан Затворник, «Что есть духовная жизнь и как на нее настроиться»; прп. Амвросий Оптинский, «Письма к мирским особам»; свт. Иоанн Златоуст, «Беседы на Евангелие от Матфея»).
-2. Конкретное наставление к действию (2 четких шага, что человеку сделать сегодня: внутреннее дело и краткая молитва).`;
+1. Прямая цитата или точная мысль святого отца по этой теме с обязательным указанием его имени и точного источника (названия книги, беседы или письма).
+2. Конкретное наставление к действию (четкие шаги, что человеку сделать сегодня: внутреннее дело и краткая молитва).`;
+
+    function setDepth(mode) {
+        currentDepth = mode;
+        document.getElementById('btn-short').classList.toggle('active', mode === 'short');
+        document.getElementById('btn-deep').classList.toggle('active', mode === 'deep');
+    }
 
     function switchTab(t) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -145,20 +140,7 @@
         document.getElementById('screen-' + t).classList.add('active');
         document.getElementById('nav-' + t).classList.add('active');
     }
-    function openSettings() {
-        document.getElementById('cfg-url').value = localStorage.getItem('ai_url') || 'https://vsegpt.ru';
-        document.getElementById('cfg-model').value = localStorage.getItem('ai_model') || 'openai/gpt-4o-mini';
-        document.getElementById('cfg-key').value = localStorage.getItem('ai_key') || '';
-        document.getElementById('settings-modal').classList.add('open');
-    }
-    function closeSettings() { document.getElementById('settings-modal').classList.remove('open'); }
-    function saveSettings() {
-        localStorage.setItem('ai_url', document.getElementById('cfg-url').value.trim().replace(/\/+$/, ''));
-        localStorage.setItem('ai_model', document.getElementById('cfg-model').value.trim());
-        localStorage.setItem('ai_key', document.getElementById('cfg-key').value.trim());
-        closeSettings();
-        alert('Настройки сохранены!');
-    }
+
     function formatBotReply(raw) {
         if (raw.includes('[ПОДДЕРЖКА]') && raw.includes('[ПИСАНИЕ]') && raw.includes('[ТОЛКОВАНИЕ]')) {
             const p1 = raw.split('[ПИСАНИЕ]').at(0).replace('[ПОДДЕРЖКА]', '').trim().replace(/\n/g, '<br>');
@@ -171,6 +153,7 @@
         }
         return raw.replace(/\n/g, '<br>');
     }
+
     function appendMessage(text, isUser) {
         const box = document.getElementById('chat-box');
         const div = document.createElement('div');
@@ -180,23 +163,30 @@
         box.scrollTop = box.scrollHeight;
         return div;
     }
+
     async function askAI(userText) {
-        const apiKey = localStorage.getItem('ai_key');
-        const baseUrl = localStorage.getItem('ai_url') || 'https://vsegpt.ru';
-        const model = localStorage.getItem('ai_model') || 'openai/gpt-4o-mini';
-        if (!apiKey) { appendMessage('Нажмите «⚙ Настройки ИИ» вверху и вставьте ключ VseGPT.', false); return; }
         const loadingMsg = appendMessage('Ищу наставление в Писании и трудах святых отцов...', false);
+        const depthRule = currentDepth === 'short'
+            ? '\n\nРЕЖИМ ОТВЕТА: КРАТКО. Пиши максимально сжато: строго 1 предложение в поддержке, 1 стих Писания и не более 3 коротких предложений в толковании.'
+            : '\n\nРЕЖИМ ОТВЕТА: ГЛУБОКО. Дай обстоятельный, глубокий разбор: 3-4 предложения в поддержке, полная цитата Писания и развернутое святоотеческое толкование на 2 абзаца с подробным наставлением.';
+
         try {
             const response = await fetch('/api/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ baseUrl, apiKey, model, messages: [{ role: 'system', content: SYSTEM_PROMPT }, { role: 'user', content: userText }] })
+                body: JSON.stringify({
+                    messages: [
+                        { role: 'system', content: BASE_PROMPT + depthRule },
+                        { role: 'user', content: userText }
+                    ]
+                })
             });
             const data = await response.json();
             if (!response.ok) { loadingMsg.textContent = 'Ошибка (' + response.status + '): ' + JSON.stringify(data); return; }
             loadingMsg.innerHTML = formatBotReply(data.choices.at(0).message.content);
         } catch (err) { loadingMsg.textContent = 'Ошибка соединения: ' + err.message; }
     }
+
     function quickAsk(text) { switchTab('chat'); appendMessage(text, true); askAI(text); }
     function startChatFromHome() { const i = document.getElementById('home-input'); const t = i.value.trim(); if (!t) return; i.value = ''; quickAsk(t); }
     function sendMessage() { const i = document.getElementById('chat-input'); const t = i.value.trim(); if (!t) return; i.value = ''; appendMessage(t, true); askAI(t); }
