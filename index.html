@@ -159,15 +159,15 @@
         if (!apiKey) { appendMessage('Нажмите «⚙ Настройки ИИ» вверху и вставьте ключ VseGPT.', false); return; }
         const loadingMsg = appendMessage('Ищу слово поддержки в Писании...', false);
         try {
-            const response = await fetch(baseUrl + '/chat/completions', {
+            const response = await fetch('/api/chat', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + apiKey },
-                body: JSON.stringify({ model: model, messages: [{ role: 'system', content: SYSTEM_PROMPT }, { role: 'user', content: userText }], temperature: 0.6 })
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ baseUrl, apiKey, model, messages: [{ role: 'system', content: SYSTEM_PROMPT }, { role: 'user', content: userText }] })
             });
-            if (!response.ok) { loadingMsg.textContent = 'Ошибка (' + response.status + '): ' + await response.text(); return; }
             const data = await response.json();
+            if (!response.ok) { loadingMsg.textContent = 'Ошибка (' + response.status + '): ' + JSON.stringify(data); return; }
             loadingMsg.textContent = data.choices[0].message.content;
-        } catch (err) { loadingMsg.textContent = 'Сетевая ошибка: ' + err.message; }
+        } catch (err) { loadingMsg.textContent = 'Ошибка соединения: ' + err.message; }
     }
     function quickAsk(text) { switchTab('chat'); appendMessage(text, true); askAI(text); }
     function startChatFromHome() { const i = document.getElementById('home-input'); const t = i.value.trim(); if (!t) return; i.value = ''; quickAsk(t); }
