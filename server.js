@@ -4,24 +4,6 @@ const app = express();
 app.use(express.json());
 app.use(express.static(__dirname));
 
-async function callVseGPT(apiKey, modelName, messages) {
-  const response = await fetch('https://vsegpt.ru', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${apiKey}`
-    },
-    body: JSON.stringify({
-      model: modelName,
-      messages: messages,
-      temperature: 0.6
-    })
-  });
-
-  const text = await response.text();
-  return { ok: response.ok, status: response.status, text };
-}
-
 app.post('/api/chat', async (req, res) => {
   try {
     const apiKey = (process.env.VSEGPT_KEY || '').trim();
@@ -31,19 +13,28 @@ app.post('/api/chat', async (req, res) => {
 
     const { messages } = req.body;
 
-    // Основная модель с безупречным русским языком
-    let result = await callVseGPT(apiKey, 'openai/gpt-4o', messages);
+    const response = await fetch('https://vsegpt.ru', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${apiKey}`,
+        'Referer': 'https://vsegpt.ru',
+        'Origin': 'https://vsegpt.ru'
+      },
+      body: JSON.stringify({
+        model: 'openai/gpt-4o-mini',
+        messages: messages,
+        temperature: 0.6
+      })
+    });
 
-    // Страховка: если основная модель недоступна, переключаемся на проверенную mini
-    if (!result.ok || result.text.trim().startsWith('<')) {
-      result = await callVseGPT(apiKey, 'openai/gpt-4o-mini', messages);
-    }
-
+    const text = await response.text();
     try {
-      const data = JSON.parse(result.text);
-      return res.status(result.status).json(data);
+      const data = JSON.parse(text);
+      return res.status(response.status).json(data);
     } catch {
-      return res.status(502).json({ error: 'Временный сбой шлюза VseGPT. Повторите запрос через 5 секунд.' });
+      return res.status(502).json({ error: `Фильтр VseGPT (код ${response.status}). Подождите 10 сек и повторите.` });
     }
   } catch (error) {
     return res.status(500).json({ error: error.message });
