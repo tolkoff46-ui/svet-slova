@@ -176,28 +176,14 @@
             : '\n\nРЕЖИМ ОТВЕТА: ГЛУБОКО. Дай обстоятельный, глубокий разбор: 3-4 предложения в поддержке, полная цитата Писания и развернутое святоотеческое толкование на 2 абзаца с подробным наставлением.';
 
         try {
-            const keyRes = await fetch('/api/key');
-            const keyData = await keyRes.json();
-            const apiKey = keyData.key;
-
-            if (!apiKey) {
-                loadingMsg.textContent = 'Ошибка: ключ VSEGPT_KEY не найден в настройках Amvera.';
-                return;
-            }
-
-            const response = await fetch('https://vsegpt.ru', {
+            const response = await fetch('/api/chat', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + apiKey
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    model: 'openai/gpt-4o-mini',
                     messages: [
                         { role: 'system', content: BASE_PROMPT + depthRule },
                         { role: 'user', content: userText }
-                    ],
-                    temperature: 0.6
+                    ]
                 })
             });
 
