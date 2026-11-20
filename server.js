@@ -13,14 +13,14 @@ app.post('/api/chat', async (req, res) => {
     }
 
     const { messages } = req.body;
-    const response = await fetch('https://api.vsegpt.ru/v1/chat/completions', {
+    const response = await fetch('https://vsegpt.ru', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${apiKey}`
       },
       body: JSON.stringify({
-        model: 'openai/gpt-4o-mini',
+        model: 'anthropic/claude-3-5-haiku',
         messages: messages,
         temperature: 0.6
       })
