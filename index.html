@@ -22,11 +22,11 @@
         .logo { display: flex; align-items: center; gap: 10px; font-size: 19px; font-weight: 600; }
         .logo-icon { width: 28px; height: 28px; background: var(--accent); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; }
         .icon-btn { background: var(--accent-light); color: var(--accent); border: 1px solid var(--border); padding: 6px 12px; border-radius: 20px; font-size: 13px; font-weight: 500; cursor: pointer; }
-        main { flex: 1; padding: 20px; padding-bottom: 95px; overflow-y: auto; }
+        main { flex: 1; padding: 20px; padding-bottom: 100px; overflow-y: auto; }
         .screen { display: none; }
         .screen.active { display: block; }
         .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 20px; box-shadow: var(--shadow); margin-bottom: 20px; }
-        .badge { display: inline-block; background: var(--accent-light); color: var(--accent); font-size: 11px; font-weight: 600; text-transform: uppercase; padding: 4px 10px; border-radius: 12px; margin-bottom: 12px; }
+        .badge { display: inline-block; background: var(--accent-light); color: var(--accent); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; padding: 4px 10px; border-radius: 12px; margin-bottom: 12px; }
         .quote-text { font-family: Georgia, serif; font-size: 17px; line-height: 1.55; margin-bottom: 10px; font-style: italic; }
         .quote-source { font-size: 13px; color: var(--accent); font-weight: 600; margin-bottom: 14px; }
         .quote-meaning { font-size: 14px; line-height: 1.5; color: var(--text-secondary); padding-top: 12px; border-top: 1px solid var(--border); }
@@ -37,10 +37,13 @@
         .input-box { width: 100%; background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 14px; font-size: 15px; resize: none; min-height: 90px; margin-bottom: 12px; outline: none; }
         .primary-btn { width: 100%; background: var(--accent); color: white; border: none; border-radius: 14px; padding: 14px; font-size: 15px; font-weight: 600; cursor: pointer; }
         .chat-messages { display: flex; flex-direction: column; gap: 14px; margin-bottom: 16px; }
-        .msg { padding: 14px 16px; border-radius: 16px; font-size: 14.5px; line-height: 1.55; max-width: 92%; white-space: pre-wrap; }
-        .msg-user { background: var(--accent-light); align-self: flex-end; border-bottom-right-radius: 4px; }
-        .msg-bot { background: var(--bg-card); border: 1px solid var(--border); align-self: flex-start; border-bottom-left-radius: 4px; }
-        .chat-input-bar { display: flex; gap: 8px; margin-top: 10px; }
+        .msg { padding: 16px; border-radius: 18px; font-size: 14.5px; line-height: 1.55; max-width: 94%; }
+        .msg-user { background: var(--accent-light); align-self: flex-end; border-bottom-right-radius: 4px; color: var(--text-primary); }
+        .msg-bot { background: var(--bg-card); border: 1px solid var(--border); align-self: flex-start; border-bottom-left-radius: 4px; box-shadow: var(--shadow); }
+        .bot-sec-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: var(--accent); margin-top: 14px; margin-bottom: 6px; }
+        .bot-sec-title:first-child { margin-top: 0; }
+        .bot-quote-box { font-family: Georgia, serif; font-style: italic; background: var(--bg-main); border-left: 3px solid var(--accent); padding: 10px 12px; border-radius: 6px; margin: 4px 0; color: var(--text-primary); }
+        .chat-input-bar { display: flex; gap: 8px; margin-top: 12px; }
         .chat-input-bar input { flex: 1; padding: 12px 14px; border: 1px solid var(--border); border-radius: 12px; background: var(--bg-card); font-size: 15px; outline: none; }
         .chat-input-bar button { background: var(--accent); color: white; border: none; border-radius: 12px; padding: 0 18px; font-weight: 600; cursor: pointer; }
         .diary-question { background: var(--accent-light); padding: 14px; border-radius: 12px; font-size: 14px; line-height: 1.45; margin-bottom: 14px; }
@@ -72,7 +75,7 @@
                 <div class="quote-meaning"><strong>Смысл для жизни:</strong> Тревога о будущем забирает силы, нужные нам сегодня. Святые отцы учат решать задачи по мере их поступления с доверием к Богу.</div>
             </div>
             <div class="section-title">Что сейчас на сердце?</div>
-            <div class="section-subtitle">Нажмите на «⚙ Настройки ИИ» вверху, вставьте свой ключ VseGPT, а затем выберите тему или задайте вопрос.</div>
+            <div class="section-subtitle">Выберите тему или опишите вашу ситуацию — помощник подберет опору в Писании и трудах святых отцов.</div>
             <div class="topics-grid">
                 <button class="topic-chip" onclick="quickAsk('Меня одолевает сильная тревога и страх за будущее')">Тревога и страх</button>
                 <button class="topic-chip" onclick="quickAsk('Мне тяжело простить обиду близкому человеку')">Обида и прощение</button>
@@ -84,7 +87,7 @@
         </div>
         <div id="screen-chat" class="screen">
             <div class="chat-messages" id="chat-box">
-                <div class="msg msg-bot">Мир вам. Расскажите о том, что вас тревожит, и мы вместе поищем опору в Священном Писании и трудах святых отцов.</div>
+                <div class="msg msg-bot">Мир вам. Расскажите о том, что вас тревожит, и мы вместе поищем опору в Священном Писании и святоотеческом наследии.</div>
             </div>
             <div class="chat-input-bar">
                 <input type="text" id="chat-input" placeholder="Напишите ваш вопрос..." onkeypress="if(event.key==='Enter') sendMessage()">
@@ -122,7 +125,16 @@
     </div>
 </div>
 <script>
-    const SYSTEM_PROMPT = "Ты — бережный, тактичный и смиренный православный путеводитель по Священному Писанию и святоотеческому наследию. Поддержи человека, опираясь строго на православный канон. Не выдумывай цитаты, не занимайся гаданиями и не подменяй священника. Всегда отвечай в 3 блока: 1. СЛОВО ПОДДЕРЖКИ. 2. ИЗ СВЯЩЕННОГО ПИСАНИЯ (точная цитата со ссылкой). 3. ПОНИМАНИЕ ДЛЯ ЖИЗНИ (пояснение по святым отцам).";
+    const SYSTEM_PROMPT = `Ты — бережный, мудрый и смиренный православный путеводитель по Священному Писанию и трудам святых отцов. Пиши исключительно на чистом, красивом русском языке, никогда не используй английские или иностранные слова. Опирайся строго на православный канон, не выдумывай цитаты, не занимайся предсказаниями и не подменяй священника.
+
+Строго соблюдай формат ответа из трех разделов с точными метками:
+[ПОДДЕРЖКА]
+Теплое, сочувствующее обращение без осуждения (2-3 предложения).
+[ПИСАНИЕ]
+Точная цитата из Библии в кавычках с указанием книги, главы и стиха.
+[ТОЛКОВАНИЕ]
+Краткое разъяснение смысла этой цитаты с упоминанием конкретного святого отца (например, свт. Иоанна Златоуста, свт. Феофана Затворника, прп. Амвросия Оптинского) и спокойный совет для жизни.`;
+
     function switchTab(t) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
         document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
@@ -142,6 +154,18 @@
         localStorage.setItem('ai_key', document.getElementById('cfg-key').value.trim());
         closeSettings();
         alert('Настройки сохранены!');
+    }
+    function formatBotReply(raw) {
+        if (raw.includes('[ПОДДЕРЖКА]') && raw.includes('[ПИСАНИЕ]') && raw.includes('[ТОЛКОВАНИЕ]')) {
+            const p1 = raw.split('[ПИСАНИЕ]')[0].replace('[ПОДДЕРЖКА]', '').trim();
+            const rest = raw.split('[ПИСАНИЕ]')[1];
+            const p2 = rest.split('[ТОЛКОВАНИЕ]')[0].trim();
+            const p3 = rest.split('[ТОЛКОВАНИЕ]')[1].trim();
+            return `<div class="bot-sec-title">Слово поддержки</div><div>${p1}</div>
+                    <div class="bot-sec-title">Из Священного Писания</div><div class="bot-quote-box">${p2}</div>
+                    <div class="bot-sec-title">Понимание для жизни</div><div>${p3}</div>`;
+        }
+        return raw.replace(/\n/g, '<br>');
     }
     function appendMessage(text, isUser) {
         const box = document.getElementById('chat-box');
@@ -166,12 +190,12 @@
             });
             const data = await response.json();
             if (!response.ok) { loadingMsg.textContent = 'Ошибка (' + response.status + '): ' + JSON.stringify(data); return; }
-            loadingMsg.textContent = data.choices[0].message.content;
+            loadingMsg.innerHTML = formatBotReply(data.choices.at(0).message.content);
         } catch (err) { loadingMsg.textContent = 'Ошибка соединения: ' + err.message; }
     }
     function quickAsk(text) { switchTab('chat'); appendMessage(text, true); askAI(text); }
     function startChatFromHome() { const i = document.getElementById('home-input'); const t = i.value.trim(); if (!t) return; i.value = ''; quickAsk(t); }
-    function sendMessage() { const i = document.getElementById('chat-input'); const t = i.value.trim(); if (!t) return; i.value = ''; appendMessage(t, true); askAI(t); }
+    function sendMessage() { const i = document.getElementById('chat-input'); const t = i.value.trim(); if (!t) return; i.value = ''; appendMessage(text, true); askAI(t); }
     function saveNote() {
         const i = document.getElementById('diary-input'); const t = i.value.trim(); if (!t) return;
         const notes = JSON.parse(localStorage.getItem('svet_notes') || '[]');
