@@ -4,12 +4,18 @@
   "start_url": "/",
   "display": "standalone",
   "background_color": "#FAF8F5",
-  "theme_color": "#FAF8F5",
+  "theme_color": "#B89B5E",
   "icons": [
     {
-      "src": "data:image/svg+xml,%3Csvg xmlns='http://w3.org' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='110' fill='%23B89B5E'/%3E%3Ctext x='50%25' y='54%25' font-size='280' fill='white' text-anchor='middle' dominant-baseline='middle'%3E%E2%9C%A6%3C/text%3E%3C/svg%3E",
+      "src": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAYAAABS3GwHAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAABNSURBVHgB7cExAQAAAMKg9U9tDB+gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgGsDGrAAAX2N8+kAAAAASUVORK5CYII=",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAYAAAD0eNT6AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAABYSURBVHgB7cEBDQAAAMKg909tDjegAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAtwG7gAAB4L46+gAAAABJRU5ErkJggg==",
       "sizes": "512x512",
-      "type": "image/svg+xml",
+      "type": "image/png",
       "purpose": "any maskable"
     }
   ]
