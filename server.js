@@ -6,20 +6,18 @@ app.use(express.static(__dirname));
 
 app.post('/api/chat', async (req, res) => {
   try {
-    const rawKey = process.env.VSEGPT_KEY || '';
-    const apiKey = rawKey.trim();
+    const apiKey = (process.env.VSEGPT_KEY || '').trim();
 
     if (!apiKey) {
-      return res.status(500).json({ error: 'Ключ VSEGPT_KEY пустой. Проверьте вкладку «Переменные» в Amvera и нажмите «Перезапустить».' });
+      return res.status(500).json({ error: 'Ключ VSEGPT_KEY не найден в переменных Amvera' });
     }
 
     const { messages } = req.body;
-    const response = await fetch('https://vsegpt.ru', {
+    const response = await fetch('https://api.vsegpt.ru/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`,
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+        'Authorization': `Bearer ${apiKey}`
       },
       body: JSON.stringify({
         model: 'openai/gpt-4o-mini',
@@ -28,13 +26,8 @@ app.post('/api/chat', async (req, res) => {
       })
     });
 
-    const rawText = await response.text();
-    try {
-      const data = JSON.parse(rawText);
-      res.status(response.status).json(data);
-    } catch (e) {
-      res.status(502).json({ error: `Ответ сервера (${response.status}): ${rawText.slice(0, 180)}` });
-    }
+    const data = await response.json();
+    res.status(response.status).json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
