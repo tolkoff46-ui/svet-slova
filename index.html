@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Свет Слова — Духовный навигатор</title>
+    <style>
+        :root {
+            --bg-main: #FAF8F5;
+            --bg-card: #FFFFFF;
+            --text-primary: #2C3539;
+            --text-secondary: #68737A;
+            --accent: #B89B5E;
+            --accent-light: #F3EFE6;
+            --border: #EAE4D7;
+            --shadow: 0 4px 20px rgba(44, 53, 57, 0.05);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #EFECE6;
+            color: var(--text-primary);
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 480px;
+            background-color: var(--bg-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: 0 0 30px rgba(0,0,0,0.08);
+        }
+
+        header {
+            padding: 16px 20px;
+            background-color: var(--bg-main);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 19px;
+            font-weight: 600;
+        }
+
+        .logo-icon {
+            width: 28px;
+            height: 28px;
+            background: var(--accent);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .icon-btn {
+            background: var(--accent-light);
+            color: var(--accent);
+            border: 1px solid var(--border);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        main {
+            flex: 1;
+            padding: 20px;
+            padding-bottom: 90px;
+            overflow-y: auto;
+        }
+
+        .screen {
+            display: none;
+            animation: fadeIn 0.25s ease;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+        }
+
+        .badge {
+            display: inline-block;
+            background: var(--accent-light);
+            color: var(--accent);
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            padding: 4px 10px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+        }
+
+        .quote-text {
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: 17px;
+            line-height: 1.55;
+            margin-bottom: 10px;
+            font-style: italic;
+        }
+
+        .quote-source {
+            font-size: 13px;
+            color: var(--accent);
+            font-weight: 600;
+            margin-bottom: 14px;
+        }
+
+        .quote-meaning {
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--text-secondary);
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .section-subtitle {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            line-height: 1.4;
+        }
+
+        .topics-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .topic-chip {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .input-box {
+            width: 100%;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 14px;
+            font-size: 15px;
+            color: var(--text-primary);
+            resize: none;
+            min-height: 90px;
+            margin-bottom: 12px;
+            outline: none;
+        }
+
+        .primary-btn {
+            width: 100%;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 14px;
+            padding: 14px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .chat-messages {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-bottom: 16px;
+        }
+
+        .msg {
+            padding: 14px 16px;
+            border-radius: 16px;
+            font-size: 14.5px;
+            line-height: 1.55;
+            max-width: 92%;
+            white-space: pre-wrap;
+        }
+
+        .msg-user {
+            background: var(--accent-light);
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+
+        .msg-bot {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+            box-shadow: var(--shadow);
+        }
+
+        .chat-input-bar {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .chat-input-bar input {
+            flex: 1;
+            padding: 12px 14px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: var(--bg-card);
+            font-size: 15px;
+            outline: none;
+        }
+
+        .chat-input-bar button {
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 0 18px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .diary-question {
+            background: var(--accent-light);
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 14px;
+            line-height: 1.45;
+            margin-bottom: 14px;
+        }
+
+        .saved-note {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 14px;
+            border-radius: 12px;
+            margin-top: 12px;
+            font-size: 14px;
+        }
+
+        .saved-note-date {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+
+        /* Модальное окно настроек */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.45);
+            z-index: 50;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.open {
+            display: flex;
+        }
+
+        .modal-box {
+            background: var(--bg-card);
+            width: 100%;
+            max-width: 400px;
+            border-radius: 18px;
+            padding: 22px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+        }
+
+        .field-label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+            margin-top: 12px;
+        }
+
+        .field-input {
+            width: 100%;
+            padding: 11px 12px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        nav {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            max-width: 480px;
+            background: var(--bg-card);
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0 14px;
+            z-index: 20;
+        }
+
+        .nav-item {
+            background: none;
+            border: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: var(--text-secondary);
+            font-size: 11px;
+            cursor: pointer;
+        }
+
+        .nav-item.active {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .nav-icon { font-size: 20px; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <header>
+        <div class="logo">
+            <div class="logo-icon">✦</div>
+            <span>Свет Слова</span>
+        </div>
+        <div class="header-actions">
+            <button class="icon-btn" onclick="openSettings()">⚙ Настройки ИИ</button>
+        </div>
+    </header>
+
+        <div id="screen-home" class="screen active">
+            <div class="card">
+              
