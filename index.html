@@ -295,8 +295,7 @@
             alert('Неверный код доступа. Проверьте правильность ввода.');
         }
     }
-
-    function switchTab(t) {
+        function switchTab(t) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
         document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
         document.getElementById('screen-' + t).classList.add('active');
@@ -391,4 +390,17 @@
     }
     function saveNote() {
         const i = document.getElementById('diary-input'); const t = i.value.trim(); if (!t) return;
-    
+        const notes = JSON.parse(localStorage.getItem('svet_notes') || '[]');
+        notes.unshift({ date: new Date().toLocaleDateString('ru-RU'), text: t });
+        localStorage.setItem('svet_notes', JSON.stringify(notes)); i.value = ''; renderNotes();
+    }
+    function renderNotes() {
+        const notes = JSON.parse(localStorage.getItem('svet_notes') || '[]');
+        document.getElementById('notes-list').innerHTML = notes.map(n => `<div class="saved-note"><div class="saved-note-date">${n.date}</div><div>${n.text}</div></div>`).join('');
+    }
+    updateLimitUI();
+    renderNotes();
+    if ('serviceWorker' in navigator) { navigator.serviceWorker.register('/sw.js'); }
+</script>
+</body>
+</html>
