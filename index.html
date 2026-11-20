@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Свет Слова — Духовный навигатор</title>
-        <link rel="manifest" href="/manifest.json">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#B89B5E">
     <style>
         :root {
             --bg-main: #FAF8F5;
@@ -63,7 +64,7 @@
     <div class="app-container">
     <header>
         <div class="logo"><div class="logo-icon">✦</div><span>Свет Слова</span></div>
-        <button class="icon-btn" onclick="alert('Чтобы установить приложение на рабочий стол телефона:\n\n• На iPhone: нажмите «Поделиться» внизу экрана Safari → «На экран «Домой»».\n• На Android: нажмите три точки в правом верхнем углу Chrome → «Добавить на главный экран».')">+ На экран</button>
+        <button class="icon-btn" onclick="alert('Чтобы установить приложение на рабочий стол телефона:\n\n• На Android: нажмите три точки в правом верхнем углу Chrome → «Добавить на главный экран» → «Установить».\n• На iPhone: нажмите «Поделиться» внизу экрана Safari → «На экран «Домой»».')">+ На экран</button>
     </header>
     <main>
         <div id="screen-home" class="screen active">
@@ -234,6 +235,7 @@
         document.getElementById('notes-list').innerHTML = notes.map(n => `<div class="saved-note"><div class="saved-note-date">${n.date}</div><div>${n.text}</div></div>`).join('');
     }
     renderNotes();
+    if ('serviceWorker' in navigator) { navigator.serviceWorker.register('/sw.js'); }
 </script>
 </body>
 </html>
