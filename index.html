@@ -161,10 +161,10 @@
     }
     function formatBotReply(raw) {
         if (raw.includes('[ПОДДЕРЖКА]') && raw.includes('[ПИСАНИЕ]') && raw.includes('[ТОЛКОВАНИЕ]')) {
-            const p1 = raw.split('[ПИСАНИЕ]').replace('[ПОДДЕРЖКА]', '').trim().replace(/\n/g, '<br>');
-            const rest = raw.split('[ПИСАНИЕ]');
-            const p2 = rest.split('[ТОЛКОВАНИЕ]').trim().replace(/\n/g, '<br>');
-            const p3 = rest.split('[ТОЛКОВАНИЕ]').trim().replace(/\n/g, '<br>');
+            const p1 = raw.split('[ПИСАНИЕ]').at(0).replace('[ПОДДЕРЖКА]', '').trim().replace(/\n/g, '<br>');
+            const rest = raw.split('[ПИСАНИЕ]').at(1);
+            const p2 = rest.split('[ТОЛКОВАНИЕ]').at(0).trim().replace(/\n/g, '<br>');
+            const p3 = rest.split('[ТОЛКОВАНИЕ]').at(1).trim().replace(/\n/g, '<br>');
             return `<div class="bot-sec-title">Слово наставника</div><div>${p1}</div>
                     <div class="bot-sec-title">Из Священного Писания</div><div class="bot-quote-box">${p2}</div>
                     <div class="bot-sec-title">Святоотеческое наставление</div><div>${p3}</div>`;
