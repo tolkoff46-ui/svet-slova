@@ -75,12 +75,6 @@
             font-size: 15px;
         }
 
-        .header-actions {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
-
         .icon-btn {
             background: var(--accent-light);
             color: var(--accent);
@@ -95,22 +89,16 @@
         main {
             flex: 1;
             padding: 20px;
-            padding-bottom: 90px;
+            padding-bottom: 95px;
             overflow-y: auto;
         }
 
         .screen {
             display: none;
-            animation: fadeIn 0.25s ease;
         }
 
         .screen.active {
             display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(5px); }
-            to { opacity: 1; transform: translateY(0); }
         }
 
         .card {
@@ -294,7 +282,6 @@
             margin-bottom: 6px;
         }
 
-        /* Модальное окно настроек */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -378,11 +365,14 @@
             <div class="logo-icon">✦</div>
             <span>Свет Слова</span>
         </div>
-        <div class="header-actions">
-            <button class="icon-btn" onclick="openSettings()">⚙ Настройки ИИ</button>
-        </div>
+        <button class="icon-btn" onclick="openSettings()">⚙ Настройки ИИ</button>
     </header>
 
+    <main>
         <div id="screen-home" class="screen active">
             <div class="card">
-              
+                <span class="badge">Слово дня</span>
+                <div class="quote-text">«Итак не заботьтесь о завтрашнем дне, ибо завтрашний сам будет заботиться о своем: довольно для каждого дня своей заботы.»</div>
+                <div class="quote-source">Евангелие от Матфея, глава 6, стих 34</div>
+                <div class="quote-meaning">
+                    
