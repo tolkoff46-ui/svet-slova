@@ -59,7 +59,7 @@
     </style>
 </head>
 <body>
-    <div class="app-container">
+   <div class="app-container">
     <header>
         <div class="logo"><div class="logo-icon">✦</div><span>Свет Слова</span></div>
         <button class="icon-btn" onclick="alert('Чтобы установить приложение на рабочий стол телефона:\n\n• На iPhone: нажмите «Поделиться» внизу экрана Safari → «На экран «Домой»».\n• На Android: нажмите три точки в правом верхнем углу Chrome → «Добавить на главный экран».')">+ На экран</button>
@@ -114,11 +114,11 @@
         <button class="nav-item" id="nav-chat" onclick="switchTab('chat')"><span class="nav-icon">✉</span><span>Помощник</span></button>
         <button class="nav-item" id="nav-diary" onclick="switchTab('diary')"><span class="nav-icon">✎</span><span>Дневник</span></button>
     </nav>
-    </div>
+   </div>
     <script>
     let currentDepth = 'short';
 
-    const BASE_PROMPT = `Ты — строгий, трезвый и любящий православный наставник, знаток Священного Писания и святоотеческих творений. Пиши исключительно на чистом русском языке, без иностранных слов, без психологической «воды» и витиеватых вступлений. Говори прямо, ясно и по существу.
+    const BASE_PROMPT = `Ты — строгий, трезвый и любящий православный наставник, знаток Священного Писания и святоотеческих творений. Пиши исключительно на чистой кириллице, на грамотном русском языке. Категорически запрещено использовать любые английские или латинские слова. Говори прямо, ясно и по существу, без психологической воды.
 
 Опирайся строго на православный канон, не выдумывай цитаты и названия книг. Всегда соблюдай структуру ответа из 3 разделов с точными метками:
 
@@ -176,22 +176,46 @@
             : '\n\nРЕЖИМ ОТВЕТА: ГЛУБОКО. Дай обстоятельный, глубокий разбор: 3-4 предложения в поддержке, полная цитата Писания и развернутое святоотеческое толкование на 2 абзаца с подробным наставлением.';
 
         try {
-            const response = await fetch('/api/chat', {
+            const keyRes = await fetch('/api/key');
+            const keyData = await keyRes.json();
+            const apiKey = keyData.key;
+
+            if (!apiKey) {
+                loadingMsg.textContent = 'Ошибка: ключ VSEGPT_KEY не найден в настройках Amvera.';
+                return;
+            }
+
+            const response = await fetch('https://vsegpt.ru', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + apiKey
+                },
                 body: JSON.stringify({
+                    model: 'openai/gpt-4o-mini',
                     messages: [
                         { role: 'system', content: BASE_PROMPT + depthRule },
                         { role: 'user', content: userText }
-                    ]
+                    ],
+                    temperature: 0.6
                 })
             });
+
             const data = await response.json();
-            if (!response.ok) { loadingMsg.textContent = 'Ошибка (' + response.status + '): ' + JSON.stringify(data); return; }
+            if (!response.ok) {
+                loadingMsg.textContent = 'Ошибка (' + response.status + '): ' + JSON.stringify(data);
+                return;
+            }
+
             const replyText = data.choices && data.choices.at(0) && data.choices.at(0).message ? data.choices.at(0).message.content : '';
-            if (!replyText) { loadingMsg.textContent = 'Пустой ответ от сервера.'; return; }
+            if (!replyText) {
+                loadingMsg.textContent = 'Пустой ответ от сервера.';
+                return;
+            }
             loadingMsg.innerHTML = formatBotReply(replyText);
-        } catch (err) { loadingMsg.textContent = 'Ошибка соединения: ' + err.message; }
+        } catch (err) {
+            loadingMsg.textContent = 'Ошибка соединения: ' + err.message;
+        }
     }
 
     function quickAsk(text) { switchTab('chat'); appendMessage(text, true); askAI(text); }
