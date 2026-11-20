@@ -34,6 +34,8 @@
         .quote-meaning { font-size: 14px; line-height: 1.5; color: var(--text-secondary); padding-top: 12px; border-top: 1px solid var(--border); }
         .section-title { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
         .section-subtitle { font-size: 14px; color: var(--text-secondary); margin-bottom: 14px; line-height: 1.4; }
+        .limit-bar { display: flex; justify-content: space-between; align-items: center; background: var(--accent-light); border: 1px solid var(--border); padding: 8px 14px; border-radius: 12px; font-size: 12.5px; color: var(--text-primary); margin-bottom: 14px; }
+        .limit-link { color: var(--accent); font-weight: 600; cursor: pointer; text-decoration: underline; background: none; border: none; font-size: 12.5px; }
         .depth-toggle { display: flex; gap: 8px; margin-bottom: 14px; }
         .depth-btn { flex: 1; padding: 10px 8px; border-radius: 12px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-secondary); font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s; }
         .depth-btn.active { background: var(--accent-light); color: var(--accent); border-color: var(--accent); font-weight: 600; }
@@ -54,6 +56,14 @@
         .diary-question { background: var(--accent-light); padding: 14px; border-radius: 12px; font-size: 14px; line-height: 1.45; margin-bottom: 14px; }
         .saved-note { background: var(--bg-card); border: 1px solid var(--border); padding: 14px; border-radius: 12px; margin-top: 12px; font-size: 14px; }
         .saved-note-date { font-size: 11px; color: var(--text-secondary); margin-bottom: 6px; }
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 50; align-items: center; justify-content: center; padding: 18px; }
+        .modal-overlay.open { display: flex; }
+        .modal-box { background: var(--bg-card); width: 100%; max-width: 410px; border-radius: 20px; padding: 22px; box-shadow: 0 12px 40px rgba(0,0,0,0.18); max-height: 90vh; overflow-y: auto; }
+        .donate-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin: 14px 0 10px; }
+        .donate-chip { padding: 10px 8px; border-radius: 12px; border: 1px solid var(--border); background: var(--bg-main); font-size: 14px; font-weight: 600; color: var(--text-primary); cursor: pointer; text-align: center; }
+        .donate-chip.active { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
+        .field-input { width: 100%; padding: 11px 12px; border: 1px solid var(--border); border-radius: 12px; font-size: 14px; outline: none; background: var(--bg-main); margin-bottom: 12px; }
+        .promo-box { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border); }
         nav { position: fixed; bottom: 0; width: 100%; max-width: 480px; background: var(--bg-card); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 10px 0 14px; z-index: 20; }
         .nav-item { background: none; border: none; display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--text-secondary); font-size: 11px; cursor: pointer; }
         .nav-item.active { color: var(--accent); font-weight: 600; }
@@ -64,7 +74,7 @@
     <div class="app-container">
     <header>
         <div class="logo"><div class="logo-icon">✦</div><span>Свет Слова</span></div>
-        <button class="icon-btn" onclick="alert('Чтобы установить приложение на рабочий стол телефона:\n\n• На Android: нажмите три точки в правом верхнем углу Chrome → «Добавить на главный экран» → «Установить».\n• На iPhone: нажмите «Поделиться» внизу экрана Safari → «На экран «Домой»».')">+ На экран</button>
+        <button class="icon-btn" onclick="openSupportModal()">♥ Поддержать</button>
     </header>
     <main>
         <div id="screen-home" class="screen active">
@@ -74,11 +84,15 @@
                 <div class="quote-source">Евангелие от Матфея, глава 6, стих 34</div>
                 <div class="quote-meaning"><strong>Смысл для жизни:</strong> Тревога о будущем забирает силы, нужные нам сегодня. Святые отцы учат решать задачи по мере их поступления с доверием к Богу.</div>
             </div>
+            <div class="limit-bar">
+                <span id="limit-text-home">Бесплатно сегодня: 3 из 3</span>
+                <button class="limit-link" onclick="openSupportModal()">Открыть безлимит</button>
+            </div>
             <div class="section-title">Что сейчас на сердце?</div>
             <div class="section-subtitle">Выберите глубину ответа, готовую тему или опишите вашу ситуацию:</div>
             <div class="depth-toggle">
                 <button class="depth-btn active" data-depth="short" onclick="setDepth('short')">Кратко (быстрая опора)</button>
-                <button class="depth-btn" data-depth="deep" onclick="setDepth('deep')">Глубоко (подробный разбор)</button>
+                <button class="depth-btn" data-depth="deep" onclick="setDepth('deep')">Глубоко (подробный разбор) 🔒</button>
             </div>
             <div class="topics-grid">
                 <button class="topic-chip" onclick="quickAsk('Меня одолевает сильная тревога и страх за будущее')">Тревога и страх</button>
@@ -90,12 +104,16 @@
             <button class="primary-btn" onclick="startChatFromHome()">Получить слово наставления</button>
         </div>
         <div id="screen-chat" class="screen">
+            <div class="limit-bar">
+                <span id="limit-text-chat">Бесплатно сегодня: 3 из 3</span>
+                <button class="limit-link" onclick="openSupportModal()">Открыть безлимит</button>
+            </div>
             <div class="chat-messages" id="chat-box">
                 <div class="msg msg-bot">Мир вам. Расскажите о том, что вас тревожит, и мы вместе поищем опору в Священном Писании и святоотеческих творениях.</div>
             </div>
             <div class="depth-toggle">
                 <button class="depth-btn active" data-depth="short" onclick="setDepth('short')">Кратко (быстрая опора)</button>
-                <button class="depth-btn" data-depth="deep" onclick="setDepth('deep')">Глубоко (подробный разбор)</button>
+                <button class="depth-btn" data-depth="deep" onclick="setDepth('deep')">Глубоко (подробный разбор) 🔒</button>
             </div>
             <div class="chat-input-bar">
                 <input type="text" id="chat-input" placeholder="Напишите ваш вопрос..." onkeypress="if(event.key==='Enter') sendMessage()">
@@ -116,9 +134,44 @@
         <button class="nav-item" id="nav-chat" onclick="switchTab('chat')"><span class="nav-icon">✉</span><span>Помощник</span></button>
         <button class="nav-item" id="nav-diary" onclick="switchTab('diary')"><span class="nav-icon">✎</span><span>Дневник</span></button>
     </nav>
+</div>
+
+<div class="modal-overlay" id="support-modal">
+    <div class="modal-box">
+        <span class="badge">Поддержка и помощь людям</span>
+        <div class="section-title">Поддержать проект и помочь людям в беде</div>
+        <div class="section-subtitle" style="margin-bottom: 10px;">
+            Сервис «Свет Слова» работает без рекламы благодаря вашему участию. Средства идут на оплату вычислительных серверов, а <strong>часть каждого пожертвования мы направляем на прямую адресную помощь нуждающимся людям — покупаем продукты и лекарства и передаем лично из рук в руки, без фондов и посредников</strong>.
+        </div>
+        <div class="section-subtitle" style="font-size: 13px; color: var(--text-primary);">
+            В благодарность за любую сумму поддержки мы откроем вам <strong>безлимитный доступ и режим глубокого разбора на 30 дней</strong>.
+        </div>
+
+        <div class="donate-grid">
+            <button class="donate-chip" onclick="selectAmount(150, this)">150 ₽</button>
+            <button class="donate-chip active" onclick="selectAmount(300, this)">300 ₽</button>
+            <button class="donate-chip" onclick="selectAmount(500, this)">500 ₽</button>
+            <button class="donate-chip" onclick="selectCustomAmount(this)">Любая сумма</button>
+        </div>
+        <input type="number" id="custom-amount" class="field-input" value="300" min="50" placeholder="Введите вашу сумму (₽)">
+        
+        <button class="primary-btn" onclick="startAutoPay()">Перейти к оплате</button>
+
+        <div class="promo-box">
+            <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 6px;">Уже есть код благодарности? Введите его здесь:</div>
+            <div style="display: flex; gap: 8px;">
+                <input type="text" id="promo-input" class="field-input" style="margin-bottom: 0;" placeholder="Код доступа">
+                <button class="icon-btn" style="border-radius: 12px; padding: 0 14px;" onclick="activatePromo()">OK</button>
+            </div>
+        </div>
+
+        <button class="icon-btn" style="width: 100%; margin-top: 14px; padding: 10px;" onclick="closeSupportModal()">Закрыть</button>
     </div>
-    <script>
+</div>
+<script>
     let currentDepth = 'short';
+    const DAILY_LIMIT = 3;
+    const PROMO_CODES = ['BLAGO30', 'SVET30', 'DOBRO'];
 
     const BASE_PROMPT = `Ты — строгий, трезвый и любящий православный наставник, знаток Священного Писания и святоотеческих творений. Пиши исключительно на чистой кириллице, на грамотном русском языке. Категорически запрещено использовать любые английские или латинские слова. Говори прямо, ясно и по существу, без психологической воды.
 
@@ -139,11 +192,108 @@
 1. Прямая цитата или точная мысль святого отца по этой теме с обязательным указанием его имени и точного источника (названия книги, беседы или письма).
 2. Конкретное наставление к действию (четкие шаги, что человеку сделать сегодня: внутреннее дело и краткая молитва).`;
 
+    function isPro() {
+        const exp = Number(localStorage.getItem('svet_pro_until') || '0');
+        return Date.now() < exp;
+    }
+
+    function getRemainingQuota() {
+        if (isPro()) return 999;
+        const today = new Date().toLocaleDateString('ru-RU');
+        const savedDate = localStorage.getItem('svet_q_date');
+        let used = Number(localStorage.getItem('svet_q_used') || '0');
+        if (savedDate !== today) {
+            used = 0;
+            localStorage.setItem('svet_q_date', today);
+            localStorage.setItem('svet_q_used', '0');
+        }
+        return Math.max(0, DAILY_LIMIT - used);
+    }
+
+    function consumeQuota() {
+        if (isPro()) return;
+        const today = new Date().toLocaleDateString('ru-RU');
+        const used = Number(localStorage.getItem('svet_q_used') || '0') + 1;
+        localStorage.setItem('svet_q_date', today);
+        localStorage.setItem('svet_q_used', String(used));
+        updateLimitUI();
+    }
+
+    function updateLimitUI() {
+        const pro = isPro();
+        const rem = getRemainingQuota();
+        const txt = pro ? 'Полный доступ активен (Безлимит)' : `Бесплатно сегодня: ${rem} из ${DAILY_LIMIT}`;
+        document.getElementById('limit-text-home').textContent = txt;
+        document.getElementById('limit-text-chat').textContent = txt;
+        document.querySelectorAll('.depth-btn').forEach(btn => {
+            if (btn.dataset.depth === 'deep') {
+                btn.textContent = pro ? 'Глубоко (подробный разбор)' : 'Глубоко (подробный разбор) 🔒';
+            }
+        });
+    }
+
     function setDepth(mode) {
+        if (mode === 'deep' && !isPro()) {
+            openSupportModal();
+            return;
+        }
         currentDepth = mode;
         document.querySelectorAll('.depth-btn').forEach(btn => {
             btn.classList.toggle('active', btn.dataset.depth === mode);
         });
+    }
+
+    function openSupportModal() { document.getElementById('support-modal').classList.add('open'); }
+    function closeSupportModal() { document.getElementById('support-modal').classList.remove('open'); }
+
+    function selectAmount(val, btn) {
+        document.getElementById('custom-amount').value = val;
+        document.querySelectorAll('.donate-chip').forEach(c => c.classList.remove('active'));
+        btn.classList.add('active');
+    }
+
+    function selectCustomAmount(btn) {
+        const input = document.getElementById('custom-amount');
+        input.value = '';
+        input.focus();
+        document.querySelectorAll('.donate-chip').forEach(c => c.classList.remove('active'));
+        btn.classList.add('active');
+    }
+
+    async function startAutoPay() {
+        const amount = Number(document.getElementById('custom-amount').value);
+        if (!amount || amount < 50) {
+            alert('Пожалуйста, укажите сумму от 50 ₽');
+            return;
+        }
+        try {
+            const res = await fetch('/api/pay', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ amount })
+            });
+            const data = await res.json();
+            if (data.confirmation_url) {
+                window.location.href = data.confirmation_url;
+                return;
+            }
+            alert(data.message || 'Переход к автооплате...');
+        } catch (e) {
+            alert('Ошибка связи с платежным шлюзом: ' + e.message);
+        }
+    }
+
+    function activatePromo() {
+        const code = document.getElementById('promo-input').value.trim().toUpperCase();
+        if (PROMO_CODES.includes(code)) {
+            const thirtyDays = Date.now() + 30 * 24 * 60 * 60 * 1000;
+            localStorage.setItem('svet_pro_until', String(thirtyDays));
+            updateLimitUI();
+            closeSupportModal();
+            alert('Благодарим вас! Безлимитный доступ и глубокий разбор открыты на 30 дней.');
+        } else {
+            alert('Неверный код доступа. Проверьте правильность ввода.');
+        }
     }
 
     function switchTab(t) {
@@ -187,6 +337,11 @@
     }
 
     async function askAI(userText) {
+        if (getRemainingQuota() <= 0) {
+            openSupportModal();
+            return;
+        }
+
         const loadingMsg = appendMessage('Ищу наставление в Писании и трудах святых отцов...', false);
         const depthRule = currentDepth === 'short'
             ? '\n\nРЕЖИМ ОТВЕТА: КРАТКО. Пиши максимально сжато: строго 1 предложение в поддержке, 1 стих Писания и не более 3 коротких предложений в толковании.'
@@ -215,27 +370,25 @@
                 loadingMsg.textContent = 'Пустой ответ от сервера.';
                 return;
             }
+            consumeQuota();
             loadingMsg.innerHTML = formatBotReply(replyText);
         } catch (err) {
             loadingMsg.textContent = 'Ошибка соединения: ' + err.message;
         }
     }
 
-    function quickAsk(text) { switchTab('chat'); appendMessage(text, true); askAI(text); }
+    function quickAsk(text) {
+        if (getRemainingQuota() <= 0) { openSupportModal(); return; }
+        switchTab('chat');
+        appendMessage(text, true);
+        askAI(text);
+    }
     function startChatFromHome() { const i = document.getElementById('home-input'); const t = i.value.trim(); if (!t) return; i.value = ''; quickAsk(t); }
-    function sendMessage() { const i = document.getElementById('chat-input'); const t = i.value.trim(); if (!t) return; i.value = ''; appendMessage(t, true); askAI(t); }
+    function sendMessage() {
+        const i = document.getElementById('chat-input'); const t = i.value.trim(); if (!t) return;
+        if (getRemainingQuota() <= 0) { openSupportModal(); return; }
+        i.value = ''; appendMessage(t, true); askAI(t);
+    }
     function saveNote() {
         const i = document.getElementById('diary-input'); const t = i.value.trim(); if (!t) return;
-        const notes = JSON.parse(localStorage.getItem('svet_notes') || '[]');
-        notes.unshift({ date: new Date().toLocaleDateString('ru-RU'), text: t });
-        localStorage.setItem('svet_notes', JSON.stringify(notes)); i.value = ''; renderNotes();
-    }
-    function renderNotes() {
-        const notes = JSON.parse(localStorage.getItem('svet_notes') || '[]');
-        document.getElementById('notes-list').innerHTML = notes.map(n => `<div class="saved-note"><div class="saved-note-date">${n.date}</div><div>${n.text}</div></div>`).join('');
-    }
-    renderNotes();
-    if ('serviceWorker' in navigator) { navigator.serviceWorker.register('/sw.js'); }
-</script>
-</body>
-</html>
+    
