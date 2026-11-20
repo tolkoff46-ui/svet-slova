@@ -59,7 +59,7 @@
     </style>
 </head>
 <body>
-   <div class="app-container">
+    <div class="app-container">
     <header>
         <div class="logo"><div class="logo-icon">✦</div><span>Свет Слова</span></div>
         <button class="icon-btn" onclick="alert('Чтобы установить приложение на рабочий стол телефона:\n\n• На iPhone: нажмите «Поделиться» внизу экрана Safari → «На экран «Домой»».\n• На Android: нажмите три точки в правом верхнем углу Chrome → «Добавить на главный экран».')">+ На экран</button>
@@ -114,8 +114,8 @@
         <button class="nav-item" id="nav-chat" onclick="switchTab('chat')"><span class="nav-icon">✉</span><span>Помощник</span></button>
         <button class="nav-item" id="nav-diary" onclick="switchTab('diary')"><span class="nav-icon">✎</span><span>Дневник</span></button>
     </nav>
-   </div>
-   <script>
+    </div>
+    <script>
     let currentDepth = 'short';
 
     const BASE_PROMPT = `Ты — строгий, трезвый и любящий православный наставник, знаток Священного Писания и святоотеческих творений. Пиши исключительно на чистой кириллице, на грамотном русском языке. Категорически запрещено использовать любые английские или латинские слова. Говори прямо, ясно и по существу, без психологической воды.
@@ -151,17 +151,27 @@
         document.getElementById('nav-' + t).classList.add('active');
     }
 
+    function cleanEnglish(str) {
+        return str
+            .replace(/\bguidance\b/gi, 'наставлении')
+            .replace(/\bprovidence\b/gi, 'Промысле')
+            .replace(/\btrust\b/gi, 'доверии')
+            .replace(/\bpeace\b/gi, 'мире')
+            .replace(/\s+[a-zA-Z]{2,}/g, '');
+    }
+
     function formatBotReply(raw) {
-        if (raw.includes('[ПОДДЕРЖКА]') && raw.includes('[ПИСАНИЕ]') && raw.includes('[ТОЛКОВАНИЕ]')) {
-            const p1 = raw.split('[ПИСАНИЕ]').at(0).replace('[ПОДДЕРЖКА]', '').trim().replace(/\n/g, '<br>');
-            const rest = raw.split('[ПИСАНИЕ]').at(1);
+        const clean = cleanEnglish(raw);
+        if (clean.includes('[ПОДДЕРЖКА]') && clean.includes('[ПИСАНИЕ]') && clean.includes('[ТОЛКОВАНИЕ]')) {
+            const p1 = clean.split('[ПИСАНИЕ]').at(0).replace('[ПОДДЕРЖКА]', '').trim().replace(/\n/g, '<br>');
+            const rest = clean.split('[ПИСАНИЕ]').at(1);
             const p2 = rest.split('[ТОЛКОВАНИЕ]').at(0).trim().replace(/\n/g, '<br>');
             const p3 = rest.split('[ТОЛКОВАНИЕ]').at(1).trim().replace(/\n/g, '<br>');
             return `<div class="bot-sec-title">Слово наставника</div><div>${p1}</div>
                     <div class="bot-sec-title">Из Священного Писания</div><div class="bot-quote-box">${p2}</div>
                     <div class="bot-sec-title">Святоотеческое наставление</div><div>${p3}</div>`;
         }
-        return raw.replace(/\n/g, '<br>');
+        return clean.replace(/\n/g, '<br>');
     }
 
     function appendMessage(text, isUser) {
