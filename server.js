@@ -14,7 +14,7 @@ app.post('/api/chat', (req, res) => {
   const postData = JSON.stringify({
     model: 'openai/gpt-4o-mini',
     messages: req.body.messages,
-    temperature: 0.6
+    temperature: 0.78
   });
 
   const options = {
@@ -48,6 +48,21 @@ app.post('/api/chat', (req, res) => {
 
   request.write(postData);
   request.end();
+});
+
+app.post('/api/pay', (req, res) => {
+  const { amount } = req.body;
+  const shopId = (process.env.YOOKASSA_SHOP_ID || '').trim();
+  const secretKey = (process.env.YOOKASSA_SECRET_KEY || '').trim();
+
+  if (!shopId || !secretKey) {
+    return res.status(503).json({
+      status: 'pending_setup',
+      message: `Автооплата на сумму ${amount} ₽ готовится к запуску. Пока вы можете активировать доступ по коду благодарности.`
+    });
+  }
+
+  res.json({ status: 'ok', amount });
 });
 
 const PORT = process.env.PORT || 80;
