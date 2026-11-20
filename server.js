@@ -6,9 +6,11 @@ app.use(express.static(__dirname));
 
 app.post('/api/chat', async (req, res) => {
   try {
-    const apiKey = process.env.VSEGPT_KEY;
+    const rawKey = process.env.VSEGPT_KEY || '';
+    const apiKey = rawKey.trim();
+
     if (!apiKey) {
-      return res.status(500).json({ error: 'Ключ VSEGPT_KEY не задан в переменных Amvera' });
+      return res.status(500).json({ error: 'Ключ VSEGPT_KEY пустой. Проверьте вкладку «Переменные» в Amvera и нажмите «Перезапустить».' });
     }
 
     const { messages } = req.body;
@@ -26,8 +28,13 @@ app.post('/api/chat', async (req, res) => {
       })
     });
 
-    const data = await response.json();
-    res.status(response.status).json(data);
+    const rawText = await response.text();
+    try {
+      const data = JSON.parse(rawText);
+      res.status(response.status).json(data);
+    } catch (e) {
+      res.status(502).json({ error: `Ответ сервера (${response.status}): ${rawText.slice(0, 180)}` });
+    }
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
