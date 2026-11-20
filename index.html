@@ -44,12 +44,12 @@
         .input-box { width: 100%; background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 14px; font-size: 15px; resize: none; min-height: 90px; margin-bottom: 12px; outline: none; }
         .primary-btn { width: 100%; background: var(--accent); color: white; border: none; border-radius: 14px; padding: 14px; font-size: 15px; font-weight: 600; cursor: pointer; }
         .chat-messages { display: flex; flex-direction: column; gap: 14px; margin-bottom: 16px; }
-        .msg { padding: 16px; border-radius: 18px; font-size: 14.5px; line-height: 1.55; max-width: 94%; }
+        .msg { padding: 16px; border-radius: 18px; font-size: 15px; line-height: 1.6; max-width: 94%; }
         .msg-user { background: var(--accent-light); align-self: flex-end; border-bottom-right-radius: 4px; color: var(--text-primary); }
         .msg-bot { background: var(--bg-card); border: 1px solid var(--border); align-self: flex-start; border-bottom-left-radius: 4px; box-shadow: var(--shadow); }
-        .bot-sec-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: var(--accent); margin-top: 14px; margin-bottom: 6px; }
-        .bot-sec-title:first-child { margin-top: 0; }
-        .bot-quote-box { font-family: Georgia, serif; font-style: italic; background: var(--bg-main); border-left: 3px solid var(--accent); padding: 10px 12px; border-radius: 6px; margin: 4px 0; color: var(--text-primary); }
+        .msg-bot p { margin-bottom: 10px; }
+        .msg-bot p:last-child { margin-bottom: 0; }
+        .bot-quote-box { font-family: Georgia, serif; font-style: italic; background: var(--bg-main); border-left: 3px solid var(--accent); padding: 10px 12px; border-radius: 6px; margin: 10px 0; color: var(--text-primary); font-size: 14.5px; }
         .chat-input-bar { display: flex; gap: 8px; }
         .chat-input-bar input { flex: 1; padding: 12px 14px; border: 1px solid var(--border); border-radius: 12px; background: var(--bg-card); font-size: 15px; outline: none; }
         .chat-input-bar button { background: var(--accent); color: white; border: none; border-radius: 12px; padding: 0 18px; font-weight: 600; cursor: pointer; }
@@ -109,7 +109,7 @@
                 <button class="limit-link" onclick="openSupportModal()">Открыть безлимит</button>
             </div>
             <div class="chat-messages" id="chat-box">
-                <div class="msg msg-bot">Мир вам. Расскажите о том, что вас тревожит, и мы вместе поищем опору в Священном Писании и святоотеческих творениях.</div>
+                <div class="msg msg-bot">Здравствуй. Расскажи своими словами, что сейчас на душе или в какой ситуации нужна опора — поговорим спокойно и поищем ответ в Писании и опыте святых отцов.</div>
             </div>
             <div class="depth-toggle">
                 <button class="depth-btn active" data-depth="short" onclick="setDepth('short')">Кратко (быстрая опора)</button>
@@ -200,24 +200,18 @@
         'прп. Никодим Святогорец («Невидимая брань»)'
     ];
 
-    const BASE_PROMPT = `Ты — строгий, трезвый и любящий православный наставник, знаток Священного Писания и святоотеческих творений. Пиши исключительно на чистой кириллице, на грамотном русском языке. Категорически запрещено использовать любые английские или латинские слова. Говори прямо, ясно и по существу, без психологической воды.
+    const BASE_PROMPT = `Ты — опытный, чуткий и мудрый православный собеседник, глубоко знающий Священное Писание и письма святых отцов (в духе писем прп. Амвросия Оптинского и свт. Феофана Затворника). Пиши исключительно на живом, естественном русском языке, без канцелярита, без заученных штампов (не начинай со слов «Мир вам», «Дорогой друг», «Помните, что Господь...») и без единого иностранного слова.
 
-Правила безопасности и канона:
-- Если просят погадать, предсказать будущее, снять порчу или трактовать сны — твердо, но с любовью объясни, что в православии это грех и суеверие, и направь человека к молитве и доверию Промыслу Божию.
-- Если человек пишет о тяжелом унынии, нежелании жить, насилии или болезни — прояви максимальное тепло, напомни о ценности его жизни перед Богом и обязательно призови как можно скорее обратиться к живому священнику, близким или врачу.
-- Никогда не выдумывай библейские цитаты и названия святоотеческих книг. Избегай заезженной цитаты из Мф. 6:34, ищи другие точные и глубокие места Писания.
+Как вести беседу:
+1. Сначала по-человечески откликнись на конкретную боль или жизненную ситуацию собеседника — так, чтобы он почувствовал, что его действительно услышали и поняли, а не выдали заготовку.
+2. Естественно вплети в разговор точную цитату из Синодального перевода Библии, выделив её с новой строки в тегах [ЦИТАТА]...[/ЦИТАТА] с указанием книги, главы и стиха.
+3. Поделись живой мыслью или примером из письма/беседы конкретного святого отца с обязательным указанием его имени и названия труда, а затем дай ясный, приземленный совет на сегодняшний день.
+4. В конце, если ситуация требует понимания деталей, задай один бережный, живой уточняющий вопрос, чтобы продолжить разговор.
 
-Всегда соблюдай структуру ответа из 3 разделов с точными метками:
-
-[ПОДДЕРЖКА]
-Краткое, трезвое и ободряющее слово без лишних сантиментов.
-
-[ПИСАНИЕ]
-Точная цитата из Синодального перевода Библии в кавычках с обязательным указанием книги, главы и стиха.
-
-[ТОЛКОВАНИЕ]
-1. Прямая цитата или точная мысль святого отца по этой теме с обязательным указанием его имени и точного источника (названия книги, беседы или письма).
-2. Конкретное наставление к действию (четкие шаги, что человеку сделать сегодня: внутреннее дело и краткая молитва).`;
+Строгие границы:
+- Если просят погадать или предсказать судьбу — тепло, но твердо объясни, почему в православии не ищут знаков и гаданий, и переведи разговор на доверие Богу.
+- При тяжелом унынии или кризисе прояви искреннее сочувствие и обязательно мягко посоветуй поговорить лично со священником или врачом.
+- Никогда не выдумывай цитаты и не пиши сухими пунктами 1, 2, 3 — говори живыми абзацами.`;
 
     function isPro() {
         const exp = Number(localStorage.getItem('svet_pro_until') || '0');
@@ -330,26 +324,18 @@
     }
 
     function cleanEnglish(str) {
-        return str
-            .replace(/\bguidance\b/gi, 'наставлении')
-            .replace(/\bprovidence\b/gi, 'Промысле')
-            .replace(/\btrust\b/gi, 'доверии')
-            .replace(/\bpeace\b/gi, 'мире')
-            .replace(/\s+[a-zA-Z]{2,}/g, '');
+        return str.replace(/\s+[a-zA-Z]{3,}/g, '');
     }
 
     function formatBotReply(raw) {
-        const clean = cleanEnglish(raw);
-        if (clean.includes('[ПОДДЕРЖКА]') && clean.includes('[ПИСАНИЕ]') && clean.includes('[ТОЛКОВАНИЕ]')) {
-            const p1 = clean.split('[ПИСАНИЕ]').at(0).replace('[ПОДДЕРЖКА]', '').trim().replace(/\n/g, '<br>');
-            const rest = clean.split('[ПИСАНИЕ]').at(1);
-            const p2 = rest.split('[ТОЛКОВАНИЕ]').at(0).trim().replace(/\n/g, '<br>');
-            const p3 = rest.split('[ТОЛКОВАНИЕ]').at(1).trim().replace(/\n/g, '<br>');
-            return `<div class="bot-sec-title">Слово наставника</div><div>${p1}</div>
-                    <div class="bot-sec-title">Из Священного Писания</div><div class="bot-quote-box">${p2}</div>
-                    <div class="bot-sec-title">Святоотеческое наставление</div><div>${p3}</div>`;
-        }
-        return clean.replace(/\n/g, '<br>');
+        let clean = cleanEnglish(raw);
+        clean = clean.replace(/\[ЦИТАТА\]([\s\S]*?)\[\/ЦИТАТА\]/g, '<div class="bot-quote-box">$1</div>');
+        const paragraphs = clean.split(/\n\s*\n/).map(p => {
+            const trimmed = p.trim();
+            if (trimmed.startsWith('<div class="bot-quote-box">')) return trimmed;
+            return '<p>' + trimmed.replace(/\n/g, '<br>') + '</p>';
+        });
+        return paragraphs.join('');
     }
 
     function appendMessage(text, isUser) {
@@ -368,18 +354,18 @@
             return;
         }
 
-        const loadingMsg = appendMessage('Ищу наставление в Писании и трудах святых отцов...', false);
+        const loadingMsg = appendMessage('Читаю и подбираю слово...', false);
         const randomBible = BIBLE_BOOKS.at(Math.floor(Math.random() * BIBLE_BOOKS.length));
         const randomFather = CHURCH_FATHERS.at(Math.floor(Math.random() * CHURCH_FATHERS.length));
 
         const depthRule = currentDepth === 'short'
-            ? '\n\nРЕЖИМ ОТВЕТА: КРАТКО. Пиши максимально сжато: строго 1 предложение в поддержке, 1 стих Писания и не более 3 коротких предложений в толковании.'
-            : '\n\nРЕЖИМ ОТВЕТА: ГЛУБОКО. Дай обстоятельный, глубокий разбор: 3-4 предложения в поддержке, полная цитата Писания и развернутое святоотеческое толкование на 2 абзаца с подробным наставлением.';
+            ? '\n\nОБЪЕМ ОТВЕТА: КРАТКО И ЖИВО. Ответь как в коротком теплом письме: 2-3 емких абзаца (живой отклик, цитата Писания в тегах [ЦИТАТА]...[/ЦИТАТА] и короткая мысль святого отца с простым шагом на сегодня).'
+            : '\n\nОБЪЕМ ОТВЕТА: ГЛУБОКАЯ БЕСЕДА. Разбери ситуацию обстоятельно и сердечно (4-5 абзацев), с глубоким святоотеческим пояснением и конкретным духовным советом.';
 
-        const varietyRule = `\n\nОРИЕНТИР ПО ИСТОЧНИКАМ ДЛЯ РАЗНООБРАЗИЯ: Если это подходит по смыслу вопроса, подбери цитату из раздела: ${randomBible} и опереться на наследие: ${randomFather}. Не повторяй цитаты из прошлых сообщений.`;
+        const varietyRule = `\n\nОРИЕНТИР ПО ИСТОЧНИКАМ: Если уместно к вопросу, обратись к разделу: ${randomBible} и опыту: ${randomFather}. Не повторяй цитаты из прошлых сообщений.`;
 
         chatHistory.push({ role: 'user', content: userText });
-        if (chatHistory.length > 6) chatHistory = chatHistory.slice(-6);
+        if (chatHistory.length > 8) chatHistory = chatHistory.slice(-8);
 
         try {
             const response = await fetch('/api/chat', {
