@@ -17,10 +17,7 @@ app.post('/api/chat', async (req, res) => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${apiKey}`,
-        'Referer': 'https://vsegpt.ru',
-        'Origin': 'https://vsegpt.ru'
+        'Authorization': `Bearer ${apiKey}`
       },
       body: JSON.stringify({
         model: 'openai/gpt-4o-mini',
@@ -29,15 +26,10 @@ app.post('/api/chat', async (req, res) => {
       })
     });
 
-    const text = await response.text();
-    try {
-      const data = JSON.parse(text);
-      return res.status(response.status).json(data);
-    } catch {
-      return res.status(502).json({ error: `Фильтр VseGPT (код ${response.status}). Подождите 10 сек и повторите.` });
-    }
+    const data = await response.json();
+    res.status(response.status).json(data);
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    res.status(500).json({ error: error.message });
   }
 });
 
