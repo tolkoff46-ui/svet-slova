@@ -15,364 +15,174 @@
             --border: #EAE4D7;
             --shadow: 0 4px 20px rgba(44, 53, 57, 0.05);
         }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        body {
-            background-color: #EFECE6;
-            color: var(--text-primary);
-            display: flex;
-            justify-content: center;
-            min-height: 100vh;
-        }
-
-        .app-container {
-            width: 100%;
-            max-width: 480px;
-            background-color: var(--bg-main);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            box-shadow: 0 0 30px rgba(0,0,0,0.08);
-        }
-
-        header {
-            padding: 16px 20px;
-            background-color: var(--bg-main);
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 19px;
-            font-weight: 600;
-        }
-
-        .logo-icon {
-            width: 28px;
-            height: 28px;
-            background: var(--accent);
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 15px;
-        }
-
-        .icon-btn {
-            background: var(--accent-light);
-            color: var(--accent);
-            border: 1px solid var(--border);
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 500;
-            cursor: pointer;
-        }
-
-        main {
-            flex: 1;
-            padding: 20px;
-            padding-bottom: 95px;
-            overflow-y: auto;
-        }
-
-        .screen {
-            display: none;
-        }
-
-        .screen.active {
-            display: block;
-        }
-
-        .card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 20px;
-            box-shadow: var(--shadow);
-            margin-bottom: 20px;
-        }
-
-        .badge {
-            display: inline-block;
-            background: var(--accent-light);
-            color: var(--accent);
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-            padding: 4px 10px;
-            border-radius: 12px;
-            margin-bottom: 12px;
-        }
-
-        .quote-text {
-            font-family: Georgia, "Times New Roman", serif;
-            font-size: 17px;
-            line-height: 1.55;
-            margin-bottom: 10px;
-            font-style: italic;
-        }
-
-        .quote-source {
-            font-size: 13px;
-            color: var(--accent);
-            font-weight: 600;
-            margin-bottom: 14px;
-        }
-
-        .quote-meaning {
-            font-size: 14px;
-            line-height: 1.5;
-            color: var(--text-secondary);
-            padding-top: 12px;
-            border-top: 1px solid var(--border);
-        }
-
-        .section-title {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
-
-        .section-subtitle {
-            font-size: 14px;
-            color: var(--text-secondary);
-            margin-bottom: 16px;
-            line-height: 1.4;
-        }
-
-        .topics-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 16px;
-        }
-
-        .topic-chip {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            color: var(--text-primary);
-            padding: 8px 14px;
-            border-radius: 20px;
-            font-size: 13px;
-            cursor: pointer;
-        }
-
-        .input-box {
-            width: 100%;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 14px;
-            font-size: 15px;
-            color: var(--text-primary);
-            resize: none;
-            min-height: 90px;
-            margin-bottom: 12px;
-            outline: none;
-        }
-
-        .primary-btn {
-            width: 100%;
-            background: var(--accent);
-            color: white;
-            border: none;
-            border-radius: 14px;
-            padding: 14px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .chat-messages {
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-            margin-bottom: 16px;
-        }
-
-        .msg {
-            padding: 14px 16px;
-            border-radius: 16px;
-            font-size: 14.5px;
-            line-height: 1.55;
-            max-width: 92%;
-            white-space: pre-wrap;
-        }
-
-        .msg-user {
-            background: var(--accent-light);
-            align-self: flex-end;
-            border-bottom-right-radius: 4px;
-        }
-
-        .msg-bot {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            align-self: flex-start;
-            border-bottom-left-radius: 4px;
-            box-shadow: var(--shadow);
-        }
-
-        .chat-input-bar {
-            display: flex;
-            gap: 8px;
-            margin-top: 10px;
-        }
-
-        .chat-input-bar input {
-            flex: 1;
-            padding: 12px 14px;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            background: var(--bg-card);
-            font-size: 15px;
-            outline: none;
-        }
-
-        .chat-input-bar button {
-            background: var(--accent);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            padding: 0 18px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .diary-question {
-            background: var(--accent-light);
-            padding: 14px;
-            border-radius: 12px;
-            font-size: 14px;
-            line-height: 1.45;
-            margin-bottom: 14px;
-        }
-
-        .saved-note {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            padding: 14px;
-            border-radius: 12px;
-            margin-top: 12px;
-            font-size: 14px;
-        }
-
-        .saved-note-date {
-            font-size: 11px;
-            color: var(--text-secondary);
-            margin-bottom: 6px;
-        }
-
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.45);
-            z-index: 50;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .modal-overlay.open {
-            display: flex;
-        }
-
-        .modal-box {
-            background: var(--bg-card);
-            width: 100%;
-            max-width: 400px;
-            border-radius: 18px;
-            padding: 22px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
-        }
-
-        .field-label {
-            display: block;
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--text-secondary);
-            margin-bottom: 6px;
-            margin-top: 12px;
-        }
-
-        .field-input {
-            width: 100%;
-            padding: 11px 12px;
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            font-size: 14px;
-            outline: none;
-        }
-
-        nav {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            max-width: 480px;
-            background: var(--bg-card);
-            border-top: 1px solid var(--border);
-            display: flex;
-            justify-content: space-around;
-            padding: 10px 0 14px;
-            z-index: 20;
-        }
-
-        .nav-item {
-            background: none;
-            border: none;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            color: var(--text-secondary);
-            font-size: 11px;
-            cursor: pointer;
-        }
-
-        .nav-item.active {
-            color: var(--accent);
-            font-weight: 600;
-        }
-
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background-color: #EFECE6; color: var(--text-primary); display: flex; justify-content: center; min-height: 100vh; }
+        .app-container { width: 100%; max-width: 480px; background-color: var(--bg-main); min-height: 100vh; display: flex; flex-direction: column; position: relative; }
+        header { padding: 16px 20px; background: var(--bg-main); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 10; }
+        .logo { display: flex; align-items: center; gap: 10px; font-size: 19px; font-weight: 600; }
+        .logo-icon { width: 28px; height: 28px; background: var(--accent); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; }
+        .icon-btn { background: var(--accent-light); color: var(--accent); border: 1px solid var(--border); padding: 6px 12px; border-radius: 20px; font-size: 13px; font-weight: 500; cursor: pointer; }
+        main { flex: 1; padding: 20px; padding-bottom: 95px; overflow-y: auto; }
+        .screen { display: none; }
+        .screen.active { display: block; }
+        .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 20px; box-shadow: var(--shadow); margin-bottom: 20px; }
+        .badge { display: inline-block; background: var(--accent-light); color: var(--accent); font-size: 11px; font-weight: 600; text-transform: uppercase; padding: 4px 10px; border-radius: 12px; margin-bottom: 12px; }
+        .quote-text { font-family: Georgia, serif; font-size: 17px; line-height: 1.55; margin-bottom: 10px; font-style: italic; }
+        .quote-source { font-size: 13px; color: var(--accent); font-weight: 600; margin-bottom: 14px; }
+        .quote-meaning { font-size: 14px; line-height: 1.5; color: var(--text-secondary); padding-top: 12px; border-top: 1px solid var(--border); }
+        .section-title { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+        .section-subtitle { font-size: 14px; color: var(--text-secondary); margin-bottom: 16px; line-height: 1.4; }
+        .topics-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+        .topic-chip { background: var(--bg-card); border: 1px solid var(--border); color: var(--text-primary); padding: 8px 14px; border-radius: 20px; font-size: 13px; cursor: pointer; }
+        .input-box { width: 100%; background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 14px; font-size: 15px; resize: none; min-height: 90px; margin-bottom: 12px; outline: none; }
+        .primary-btn { width: 100%; background: var(--accent); color: white; border: none; border-radius: 14px; padding: 14px; font-size: 15px; font-weight: 600; cursor: pointer; }
+        .chat-messages { display: flex; flex-direction: column; gap: 14px; margin-bottom: 16px; }
+        .msg { padding: 14px 16px; border-radius: 16px; font-size: 14.5px; line-height: 1.55; max-width: 92%; white-space: pre-wrap; }
+        .msg-user { background: var(--accent-light); align-self: flex-end; border-bottom-right-radius: 4px; }
+        .msg-bot { background: var(--bg-card); border: 1px solid var(--border); align-self: flex-start; border-bottom-left-radius: 4px; }
+        .chat-input-bar { display: flex; gap: 8px; margin-top: 10px; }
+        .chat-input-bar input { flex: 1; padding: 12px 14px; border: 1px solid var(--border); border-radius: 12px; background: var(--bg-card); font-size: 15px; outline: none; }
+        .chat-input-bar button { background: var(--accent); color: white; border: none; border-radius: 12px; padding: 0 18px; font-weight: 600; cursor: pointer; }
+        .diary-question { background: var(--accent-light); padding: 14px; border-radius: 12px; font-size: 14px; line-height: 1.45; margin-bottom: 14px; }
+        .saved-note { background: var(--bg-card); border: 1px solid var(--border); padding: 14px; border-radius: 12px; margin-top: 12px; font-size: 14px; }
+        .saved-note-date { font-size: 11px; color: var(--text-secondary); margin-bottom: 6px; }
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 50; align-items: center; justify-content: center; padding: 20px; }
+        .modal-overlay.open { display: flex; }
+        .modal-box { background: var(--bg-card); width: 100%; max-width: 400px; border-radius: 18px; padding: 22px; }
+        .field-label { display: block; font-size: 12px; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px; margin-top: 12px; }
+        .field-input { width: 100%; padding: 11px 12px; border: 1px solid var(--border); border-radius: 10px; font-size: 14px; outline: none; }
+        nav { position: fixed; bottom: 0; width: 100%; max-width: 480px; background: var(--bg-card); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 10px 0 14px; z-index: 20; }
+        .nav-item { background: none; border: none; display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--text-secondary); font-size: 11px; cursor: pointer; }
+        .nav-item.active { color: var(--accent); font-weight: 600; }
         .nav-icon { font-size: 20px; }
     </style>
 </head>
 <body>
-
-<div class="app-container">
+    <div class="app-container">
     <header>
-        <div class="logo">
-            <div class="logo-icon">✦</div>
-            <span>Свет Слова</span>
-        </div>
+        <div class="logo"><div class="logo-icon">✦</div><span>Свет Слова</span></div>
         <button class="icon-btn" onclick="openSettings()">⚙ Настройки ИИ</button>
     </header>
-
     <main>
         <div id="screen-home" class="screen active">
             <div class="card">
                 <span class="badge">Слово дня</span>
                 <div class="quote-text">«Итак не заботьтесь о завтрашнем дне, ибо завтрашний сам будет заботиться о своем: довольно для каждого дня своей заботы.»</div>
                 <div class="quote-source">Евангелие от Матфея, глава 6, стих 34</div>
-                <div class="quote-meaning">
-                    
+                <div class="quote-meaning"><strong>Смысл для жизни:</strong> Тревога о будущем забирает силы, нужные нам сегодня. Святые отцы учат решать задачи по мере их поступления с доверием к Богу.</div>
+            </div>
+            <div class="section-title">Что сейчас на сердце?</div>
+            <div class="section-subtitle">Нажмите на «⚙ Настройки ИИ» вверху, вставьте свой ключ VseGPT, а затем выберите тему или задайте вопрос.</div>
+            <div class="topics-grid">
+                <button class="topic-chip" onclick="quickAsk('Меня одолевает сильная тревога и страх за будущее')">Тревога и страх</button>
+                <button class="topic-chip" onclick="quickAsk('Мне тяжело простить обиду близкому человеку')">Обида и прощение</button>
+                <button class="topic-chip" onclick="quickAsk('Я стою перед сложным выбором и боюсь ошибиться')">Сложный выбор</button>
+                <button class="topic-chip" onclick="quickAsk('В семье сейчас недопонимание и ссоры')">Семейный кризис</button>
+            </div>
+            <textarea id="home-input" class="input-box" placeholder="Опишите вашу ситуацию или вопрос по Писанию..."></textarea>
+            <button class="primary-btn" onclick="startChatFromHome()">Получить слово поддержки</button>
+        </div>
+        <div id="screen-chat" class="screen">
+            <div class="chat-messages" id="chat-box">
+                <div class="msg msg-bot">Мир вам. Расскажите о том, что вас тревожит, и мы вместе поищем опору в Священном Писании и трудах святых отцов.</div>
+            </div>
+            <div class="chat-input-bar">
+                <input type="text" id="chat-input" placeholder="Напишите ваш вопрос..." onkeypress="if(event.key==='Enter') sendMessage()">
+                <button onclick="sendMessage()">→</button>
+            </div>
+        </div>
+        <div id="screen-diary" class="screen">
+            <div class="section-title">Дневник совести</div>
+            <div class="section-subtitle">Личное пространство для самоанализа и подготовки к беседе со священником. Записи хранятся только на вашем телефоне.</div>
+            <div class="diary-question"><strong>Вопрос для размышления:</strong><br>Был ли сегодня момент, когда раздражение, гордость или страх взяли верх над любовью и терпением к ближнему?</div>
+            <textarea id="diary-input" class="input-box" placeholder="Запишите ваши мысли здесь..."></textarea>
+            <button class="primary-btn" onclick="saveNote()">Сохранить запись</button>
+            <div id="notes-list" style="margin-top: 20px;"></div>
+        </div>
+    </main>
+    <nav>
+        <button class="nav-item active" id="nav-home" onclick="switchTab('home')"><span class="nav-icon">⌂</span><span>Главная</span></button>
+        <button class="nav-item" id="nav-chat" onclick="switchTab('chat')"><span class="nav-icon">✉</span><span>Помощник</span></button>
+        <button class="nav-item" id="nav-diary" onclick="switchTab('diary')"><span class="nav-icon">✎</span><span>Дневник</span></button>
+    </nav>
+</div>
+<div class="modal-overlay" id="settings-modal">
+    <div class="modal-box">
+        <div class="section-title">Настройки подключения ИИ</div>
+        <label class="field-label">Базовый URL</label>
+        <input type="text" id="cfg-url" class="field-input" value="https://vsegpt.ru">
+        <label class="field-label">Модель</label>
+        <input type="text" id="cfg-model" class="field-input" value="openai/gpt-4o-mini">
+        <label class="field-label">API-ключ (sk-or-vv-...)</label>
+        <input type="password" id="cfg-key" class="field-input" placeholder="Вставьте ваш ключ сюда">
+        <div style="display: flex; gap: 10px; margin-top: 18px;">
+            <button class="primary-btn" onclick="saveSettings()">Сохранить</button>
+            <button class="icon-btn" style="padding: 14px 18px; border-radius: 14px;" onclick="closeSettings()">Закрыть</button>
+        </div>
+    </div>
+</div>
+<script>
+    const SYSTEM_PROMPT = "Ты — бережный, тактичный и смиренный православный путеводитель по Священному Писанию и святоотеческому наследию. Поддержи человека, опираясь строго на православный канон. Не выдумывай цитаты, не занимайся гаданиями и не подменяй священника. Всегда отвечай в 3 блока: 1. СЛОВО ПОДДЕРЖКИ. 2. ИЗ СВЯЩЕННОГО ПИСАНИЯ (точная цитата со ссылкой). 3. ПОНИМАНИЕ ДЛЯ ЖИЗНИ (пояснение по святым отцам).";
+    function switchTab(t) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+        document.getElementById('screen-' + t).classList.add('active');
+        document.getElementById('nav-' + t).classList.add('active');
+    }
+    function openSettings() {
+        document.getElementById('cfg-url').value = localStorage.getItem('ai_url') || 'https://vsegpt.ru';
+        document.getElementById('cfg-model').value = localStorage.getItem('ai_model') || 'openai/gpt-4o-mini';
+        document.getElementById('cfg-key').value = localStorage.getItem('ai_key') || '';
+        document.getElementById('settings-modal').classList.add('open');
+    }
+    function closeSettings() { document.getElementById('settings-modal').classList.remove('open'); }
+    function saveSettings() {
+        localStorage.setItem('ai_url', document.getElementById('cfg-url').value.trim().replace(/\/+$/, ''));
+        localStorage.setItem('ai_model', document.getElementById('cfg-model').value.trim());
+        localStorage.setItem('ai_key', document.getElementById('cfg-key').value.trim());
+        closeSettings();
+        alert('Настройки сохранены!');
+    }
+    function appendMessage(text, isUser) {
+        const box = document.getElementById('chat-box');
+        const div = document.createElement('div');
+        div.className = 'msg ' + (isUser ? 'msg-user' : 'msg-bot');
+        div.textContent = text;
+        box.appendChild(div);
+        box.scrollTop = box.scrollHeight;
+        return div;
+    }
+    async function askAI(userText) {
+        const apiKey = localStorage.getItem('ai_key');
+        const baseUrl = localStorage.getItem('ai_url') || 'https://vsegpt.ru';
+        const model = localStorage.getItem('ai_model') || 'openai/gpt-4o-mini';
+        if (!apiKey) { appendMessage('Нажмите «⚙ Настройки ИИ» вверху и вставьте ключ VseGPT.', false); return; }
+        const loadingMsg = appendMessage('Ищу слово поддержки в Писании...', false);
+        try {
+            const response = await fetch(baseUrl + '/chat/completions', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + apiKey },
+                body: JSON.stringify({ model: model, messages: [{ role: 'system', content: SYSTEM_PROMPT }, { role: 'user', content: userText }], temperature: 0.6 })
+            });
+            if (!response.ok) { loadingMsg.textContent = 'Ошибка (' + response.status + '): ' + await response.text(); return; }
+            const data = await response.json();
+            loadingMsg.textContent = data.choices[0].message.content;
+        } catch (err) { loadingMsg.textContent = 'Сетевая ошибка: ' + err.message; }
+    }
+    function quickAsk(text) { switchTab('chat'); appendMessage(text, true); askAI(text); }
+    function startChatFromHome() { const i = document.getElementById('home-input'); const t = i.value.trim(); if (!t) return; i.value = ''; quickAsk(t); }
+    function sendMessage() { const i = document.getElementById('chat-input'); const t = i.value.trim(); if (!t) return; i.value = ''; appendMessage(t, true); askAI(t); }
+    function saveNote() {
+        const i = document.getElementById('diary-input'); const t = i.value.trim(); if (!t) return;
+        const notes = JSON.parse(localStorage.getItem('svet_notes') || '[]');
+        notes.unshift({ date: new Date().toLocaleDateString('ru-RU'), text: t });
+        localStorage.setItem('svet_notes', JSON.stringify(notes)); i.value = ''; renderNotes();
+    }
+    function renderNotes() {
+        const notes = JSON.parse(localStorage.getItem('svet_notes') || '[]');
+        document.getElementById('notes-list').innerHTML = notes.map(n => `<div class="saved-note"><div class="saved-note-date">${n.date}</div><div>${n.text}</div></div>`).join('');
+    }
+    renderNotes();
+</script>
+</body>
+</html>
