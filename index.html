@@ -75,7 +75,7 @@
                 <div class="quote-meaning"><strong>Смысл для жизни:</strong> Тревога о будущем забирает силы, нужные нам сегодня. Святые отцы учат решать задачи по мере их поступления с доверием к Богу.</div>
             </div>
             <div class="section-title">Что сейчас на сердце?</div>
-            <div class="section-subtitle">Выберите тему или опишите вашу ситуацию — помощник подберет опору в Писании и трудах святых отцов.</div>
+            <div class="section-subtitle">Выберите тему или опишите вашу ситуацию — помощник подберет наставление из Писания и трудов святых отцов.</div>
             <div class="topics-grid">
                 <button class="topic-chip" onclick="quickAsk('Меня одолевает сильная тревога и страх за будущее')">Тревога и страх</button>
                 <button class="topic-chip" onclick="quickAsk('Мне тяжело простить обиду близкому человеку')">Обида и прощение</button>
@@ -83,11 +83,11 @@
                 <button class="topic-chip" onclick="quickAsk('В семье сейчас недопонимание и ссоры')">Семейный кризис</button>
             </div>
             <textarea id="home-input" class="input-box" placeholder="Опишите вашу ситуацию или вопрос по Писанию..."></textarea>
-            <button class="primary-btn" onclick="startChatFromHome()">Получить слово поддержки</button>
+            <button class="primary-btn" onclick="startChatFromHome()">Получить слово наставления</button>
         </div>
         <div id="screen-chat" class="screen">
             <div class="chat-messages" id="chat-box">
-                <div class="msg msg-bot">Мир вам. Расскажите о том, что вас тревожит, и мы вместе поищем опору в Священном Писании и святоотеческом наследии.</div>
+                <div class="msg msg-bot">Мир вам. Расскажите о том, что вас тревожит, и мы вместе поищем опору в Священном Писании и святоотеческих творениях.</div>
             </div>
             <div class="chat-input-bar">
                 <input type="text" id="chat-input" placeholder="Напишите ваш вопрос..." onkeypress="if(event.key==='Enter') sendMessage()">
@@ -125,15 +125,19 @@
     </div>
 </div>
 <script>
-    const SYSTEM_PROMPT = `Ты — бережный, мудрый и смиренный православный путеводитель по Священному Писанию и трудам святых отцов. Пиши исключительно на чистом, красивом русском языке, никогда не используй английские или иностранные слова. Опирайся строго на православный канон, не выдумывай цитаты, не занимайся предсказаниями и не подменяй священника.
+    const SYSTEM_PROMPT = `Ты — строгий, трезвый и любящий православный наставник, знаток Священного Писания и святоотеческих творений. Пиши исключительно на чистом русском языке, без иностранных слов, без психологической «воды», общих фраз и витиеватых вступлений. Говори прямо, ясно и по существу.
 
-Строго соблюдай формат ответа из трех разделов с точными метками:
+Опирайся строго на православный канон, не выдумывай цитаты и названия книг. Всегда соблюдай структуру ответа из 3 разделов с точными метками:
+
 [ПОДДЕРЖКА]
-Теплое, сочувствующее обращение без осуждения (2-3 предложения).
+Краткое, трезвое и ободряющее слово без лишних сантиментов (1-2 емких предложения по сути ситуации).
+
 [ПИСАНИЕ]
-Точная цитата из Библии в кавычках с указанием книги, главы и стиха.
+Точная цитата из Синодального перевода Библии в кавычках с обязательным указанием книги, главы и стиха (например: «...» — Евангелие от Матфея, гл. 6, ст. 34).
+
 [ТОЛКОВАНИЕ]
-Краткое разъяснение смысла этой цитаты с упоминанием конкретного святого отца (например, свт. Иоанна Златоуста, свт. Феофана Затворника, прп. Амвросия Оптинского) и спокойный совет для жизни.`;
+1. Прямая цитата или точная мысль святого отца по этой теме с обязательным указанием его имени и точного источника — названия книги, беседы или письма (например: свт. Феофан Затворник, «Что есть духовная жизнь и как на нее настроиться»; прп. Амвросий Оптинский, «Письма к мирским особам»; свт. Иоанн Златоуст, «Беседы на Евангелие от Матфея»).
+2. Конкретное наставление к действию (2 четких шага, что человеку сделать сегодня: внутреннее дело и краткая молитва).`;
 
     function switchTab(t) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -157,13 +161,13 @@
     }
     function formatBotReply(raw) {
         if (raw.includes('[ПОДДЕРЖКА]') && raw.includes('[ПИСАНИЕ]') && raw.includes('[ТОЛКОВАНИЕ]')) {
-            const p1 = raw.split('[ПИСАНИЕ]')[0].replace('[ПОДДЕРЖКА]', '').trim();
-            const rest = raw.split('[ПИСАНИЕ]')[1];
-            const p2 = rest.split('[ТОЛКОВАНИЕ]')[0].trim();
-            const p3 = rest.split('[ТОЛКОВАНИЕ]')[1].trim();
-            return `<div class="bot-sec-title">Слово поддержки</div><div>${p1}</div>
+            const p1 = raw.split('[ПИСАНИЕ]').replace('[ПОДДЕРЖКА]', '').trim().replace(/\n/g, '<br>');
+            const rest = raw.split('[ПИСАНИЕ]');
+            const p2 = rest.split('[ТОЛКОВАНИЕ]').trim().replace(/\n/g, '<br>');
+            const p3 = rest.split('[ТОЛКОВАНИЕ]').trim().replace(/\n/g, '<br>');
+            return `<div class="bot-sec-title">Слово наставника</div><div>${p1}</div>
                     <div class="bot-sec-title">Из Священного Писания</div><div class="bot-quote-box">${p2}</div>
-                    <div class="bot-sec-title">Понимание для жизни</div><div>${p3}</div>`;
+                    <div class="bot-sec-title">Святоотеческое наставление</div><div>${p3}</div>`;
         }
         return raw.replace(/\n/g, '<br>');
     }
@@ -181,7 +185,7 @@
         const baseUrl = localStorage.getItem('ai_url') || 'https://vsegpt.ru';
         const model = localStorage.getItem('ai_model') || 'openai/gpt-4o-mini';
         if (!apiKey) { appendMessage('Нажмите «⚙ Настройки ИИ» вверху и вставьте ключ VseGPT.', false); return; }
-        const loadingMsg = appendMessage('Ищу слово поддержки в Писании...', false);
+        const loadingMsg = appendMessage('Ищу наставление в Писании и трудах святых отцов...', false);
         try {
             const response = await fetch('/api/chat', {
                 method: 'POST',
@@ -195,7 +199,7 @@
     }
     function quickAsk(text) { switchTab('chat'); appendMessage(text, true); askAI(text); }
     function startChatFromHome() { const i = document.getElementById('home-input'); const t = i.value.trim(); if (!t) return; i.value = ''; quickAsk(t); }
-    function sendMessage() { const i = document.getElementById('chat-input'); const t = i.value.trim(); if (!t) return; i.value = ''; appendMessage(text, true); askAI(t); }
+    function sendMessage() { const i = document.getElementById('chat-input'); const t = i.value.trim(); if (!t) return; i.value = ''; appendMessage(t, true); askAI(t); }
     function saveNote() {
         const i = document.getElementById('diary-input'); const t = i.value.trim(); if (!t) return;
         const notes = JSON.parse(localStorage.getItem('svet_notes') || '[]');
