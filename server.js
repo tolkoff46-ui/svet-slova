@@ -101,7 +101,7 @@ app.get('/offer', (_, res) => {
 });
 
 app.use(express.static(__dirname));
-                     function callVseGPT(apiKey, messages, temperature = 0.8) {
+function callVseGPT(apiKey, messages, temperature = 0.8) {
   return new Promise((resolve, reject) => {
     const postData = JSON.stringify({ model: 'openai/gpt-4o', messages, temperature });
     const req = https.request({
