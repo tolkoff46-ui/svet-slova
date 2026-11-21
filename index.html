@@ -400,12 +400,16 @@
         return paragraphs.join('');
     }
 
-    function saveFavorite(plainText, btn) {
+        function saveFavorite(plainText, btn) {
         const favs = JSON.parse(localStorage.getItem('svet_favs') || '[]');
-        favs.unshift({ id: Date.now(), date: new Date().toLocaleDateString('ru-RU'), text: plainText });
-        localStorage.setItem('svet_favs', JSON.stringify(favs));
+        const alreadySaved = favs.some(f => f.text.trim() === plainText.trim());
+        if (!alreadySaved) {
+            favs.unshift({ id: Date.now(), date: new Date().toLocaleDateString('ru-RU'), text: plainText });
+            localStorage.setItem('svet_favs', JSON.stringify(favs));
+        }
         btn.textContent = '★ Сохранено';
         btn.style.color = '#B89B5E';
+        btn.disabled = true;
     }
 
     function deleteFavorite(id) {
