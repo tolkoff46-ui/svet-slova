@@ -4,6 +4,11 @@ const app = express();
 
 app.use(express.json());
 app.use(express.static(__dirname));
+app.get('/icon.png', (req, res) => {
+  const pngBase64 = 'iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAYAAABS3GwHAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAABNSURBVHgB7cExAQAAAMKg9U9tDB+gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgGsDGrAAAX2N8+kAAAAASUVORK5CYII=';
+  res.setHeader('Content-Type', 'image/png');
+  res.send(Buffer.from(pngBase64, 'base64'));
+});
 
 app.post('/api/chat', (req, res) => {
   const apiKey = (process.env.VSEGPT_KEY || '').trim();
