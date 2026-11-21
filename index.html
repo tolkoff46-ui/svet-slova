@@ -7,452 +7,321 @@
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#B89B5E">
     <style>
-        :root {
-            --bg-main: #FAF8F5;
-            --bg-card: #FFFFFF;
-            --text-primary: #2C3539;
-            --text-secondary: #68737A;
-            --accent: #B89B5E;
-            --accent-light: #F3EFE6;
-            --border: #EAE4D7;
-            --shadow: 0 4px 20px rgba(44, 53, 57, 0.05);
-        }
+        :root { --bg: #FAF8F5; --card: #FFFFFF; --text: #2C3539; --muted: #68737A; --accent: #B89B5E; --accent-bg: #F3EFE6; --border: #EAE4D7; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        body { background-color: #EFECE6; color: var(--text-primary); display: flex; justify-content: center; min-height: 100vh; }
-        .app-container { width: 100%; max-width: 480px; background-color: var(--bg-main); min-height: 100vh; display: flex; flex-direction: column; position: relative; }
-        header { padding: 16px 20px; background: var(--bg-main); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 10; }
+        body { background: #EFECE6; color: var(--text); display: flex; justify-content: center; min-height: 100vh; }
+        .app { width: 100%; max-width: 480px; background: var(--bg); min-height: 100vh; display: flex; flex-direction: column; position: relative; }
+        header { padding: 16px 20px; background: var(--bg); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 10; }
         .logo { display: flex; align-items: center; gap: 10px; font-size: 19px; font-weight: 600; }
-        .logo-icon { width: 28px; height: 28px; background: var(--accent); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; }
-        .icon-btn { background: var(--accent-light); color: var(--accent); border: 1px solid var(--border); padding: 6px 12px; border-radius: 20px; font-size: 13px; font-weight: 500; cursor: pointer; }
-        main { flex: 1; padding: 20px; padding-bottom: 100px; overflow-y: auto; }
+        .logo-icon { width: 28px; height: 28px; background: var(--accent); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; }
+        .pill-btn { background: var(--accent-bg); color: var(--accent); border: 1px solid var(--border); padding: 6px 12px; border-radius: 20px; font-size: 13px; font-weight: 500; cursor: pointer; }
+        main { flex: 1; padding: 20px 20px 100px; overflow-y: auto; }
         .screen { display: none; }
         .screen.active { display: block; }
-        .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 20px; box-shadow: var(--shadow); margin-bottom: 20px; }
-        .badge { display: inline-block; background: var(--accent-light); color: var(--accent); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; padding: 4px 10px; border-radius: 12px; margin-bottom: 12px; }
-        .quote-text { font-family: Georgia, serif; font-size: 17px; line-height: 1.55; margin-bottom: 10px; font-style: italic; }
+        .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 20px; box-shadow: 0 4px 20px rgba(44,53,57,0.05); margin-bottom: 20px; }
+        .badge { display: inline-block; background: var(--accent-bg); color: var(--accent); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; padding: 4px 10px; border-radius: 12px; }
+        .quote-text { font-family: Georgia, serif; font-size: 17px; line-height: 1.55; margin: 12px 0 10px; font-style: italic; }
         .quote-source { font-size: 13px; color: var(--accent); font-weight: 600; margin-bottom: 14px; }
-        .quote-meaning { font-size: 14px; line-height: 1.5; color: var(--text-secondary); padding-top: 12px; border-top: 1px solid var(--border); }
-        .section-title { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
-        .section-subtitle { font-size: 14px; color: var(--text-secondary); margin-bottom: 14px; line-height: 1.4; }
-        .limit-bar { display: flex; justify-content: space-between; align-items: center; background: var(--accent-light); border: 1px solid var(--border); padding: 8px 12px; border-radius: 12px; font-size: 12.5px; color: var(--text-primary); margin-bottom: 14px; gap: 8px; }
-        .limit-link { color: var(--accent); font-weight: 600; cursor: pointer; text-decoration: underline; background: none; border: none; font-size: 12.5px; }
-        .limit-status-ok { color: #5A8B5E; font-weight: 600; font-size: 12px; }
-        .reset-chat-btn { background: var(--bg-card); border: 1px solid var(--border); color: var(--text-secondary); padding: 4px 9px; border-radius: 8px; font-size: 11.5px; cursor: pointer; white-space: nowrap; }
-        .reset-chat-btn:active { background: var(--accent-light); color: var(--accent); }
-        .depth-toggle { display: flex; gap: 8px; margin-bottom: 14px; }
-        .depth-btn { flex: 1; padding: 10px 8px; border-radius: 12px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-secondary); font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s; }
-        .depth-btn.active { background: var(--accent-light); color: var(--accent); border-color: var(--accent); font-weight: 600; }
-        .topics-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
-        .topic-chip { background: var(--bg-card); border: 1px solid var(--border); color: var(--text-primary); padding: 8px 14px; border-radius: 20px; font-size: 13px; cursor: pointer; }
-        .input-box { width: 100%; background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 14px; font-size: 15px; resize: none; min-height: 90px; margin-bottom: 12px; outline: none; }
-        .primary-btn { width: 100%; background: var(--accent); color: white; border: none; border-radius: 14px; padding: 14px; font-size: 15px; font-weight: 600; cursor: pointer; }
-        .home-footer { margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border); font-size: 12px; line-height: 1.5; color: var(--text-secondary); text-align: center; }
-        .home-footer p { margin-bottom: 8px; }
-        .chat-messages { display: flex; flex-direction: column; gap: 14px; margin-bottom: 16px; }
+        .quote-meaning { font-size: 14px; line-height: 1.5; color: var(--muted); padding-top: 12px; border-top: 1px solid var(--border); }
+        .title { font-size: 18px; font-weight: 600; margin-bottom: 6px; }
+        .subtitle { font-size: 14px; color: var(--muted); margin-bottom: 14px; line-height: 1.4; }
+        .limit-bar { display: flex; justify-content: space-between; align-items: center; background: var(--accent-bg); border: 1px solid var(--border); padding: 8px 12px; border-radius: 12px; font-size: 12.5px; margin-bottom: 14px; gap: 8px; }
+        .link-btn { color: var(--accent); font-weight: 600; cursor: pointer; text-decoration: underline; background: none; border: none; font-size: 12.5px; }
+        .ok-badge { color: #5A8B5E; font-weight: 600; font-size: 12px; }
+        .mini-btn { background: var(--card); border: 1px solid var(--border); color: var(--muted); padding: 4px 9px; border-radius: 8px; font-size: 11.5px; cursor: pointer; white-space: nowrap; }
+        .depth-row { display: flex; gap: 8px; margin-bottom: 14px; }
+        .depth-btn { flex: 1; padding: 10px 8px; border-radius: 12px; border: 1px solid var(--border); background: var(--card); color: var(--muted); font-size: 13px; font-weight: 500; cursor: pointer; }
+        .depth-btn.active { background: var(--accent-bg); color: var(--accent); border-color: var(--accent); font-weight: 600; }
+        .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+        .chip { background: var(--card); border: 1px solid var(--border); color: var(--text); padding: 8px 14px; border-radius: 20px; font-size: 13px; cursor: pointer; }
+        textarea.box { width: 100%; background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 14px; font-size: 15px; resize: none; min-height: 90px; margin-bottom: 12px; outline: none; }
+        .btn-main { width: 100%; background: var(--accent); color: #fff; border: none; border-radius: 14px; padding: 14px; font-size: 15px; font-weight: 600; cursor: pointer; }
+        .footer { margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border); font-size: 11.5px; line-height: 1.5; color: var(--muted); text-align: center; }
+        .footer p { margin-bottom: 8px; }
+        .footer a { color: var(--accent); }
+        .messages { display: flex; flex-direction: column; gap: 14px; margin-bottom: 16px; }
         .msg { padding: 16px; border-radius: 18px; font-size: 15px; line-height: 1.6; max-width: 94%; }
-        .msg-user { background: var(--accent-light); align-self: flex-end; border-bottom-right-radius: 4px; color: var(--text-primary); }
-        .msg-bot { background: var(--bg-card); border: 1px solid var(--border); align-self: flex-start; border-bottom-left-radius: 4px; box-shadow: var(--shadow); }
+        .msg-user { background: var(--accent-bg); align-self: flex-end; border-bottom-right-radius: 4px; }
+        .msg-bot { background: var(--card); border: 1px solid var(--border); align-self: flex-start; border-bottom-left-radius: 4px; box-shadow: 0 4px 20px rgba(44,53,57,0.05); }
         .msg-bot p { margin-bottom: 10px; }
         .msg-bot p:last-child { margin-bottom: 0; }
-        .bot-quote-box { font-family: Georgia, serif; font-style: italic; background: var(--bg-main); border-left: 3px solid var(--accent); padding: 10px 12px; border-radius: 6px; margin: 10px 0; color: var(--text-primary); font-size: 14.5px; }
+        .quote-box { font-family: Georgia, serif; font-style: italic; background: var(--bg); border-left: 3px solid var(--accent); padding: 10px 12px; border-radius: 6px; margin: 10px 0; font-size: 14.5px; }
         .msg-actions { display: flex; gap: 8px; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border); }
-        .msg-act-btn { background: var(--bg-main); border: 1px solid var(--border); color: var(--text-secondary); padding: 5px 10px; border-radius: 10px; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 4px; }
-        .msg-act-btn:active { background: var(--accent-light); color: var(--accent); }
-        .chat-input-bar { display: flex; gap: 8px; }
-        .chat-input-bar input { flex: 1; padding: 12px 14px; border: 1px solid var(--border); border-radius: 12px; background: var(--bg-card); font-size: 15px; outline: none; }
-        .chat-input-bar button { background: var(--accent); color: white; border: none; border-radius: 12px; padding: 0 18px; font-weight: 600; cursor: pointer; }
-        .diary-question { background: var(--accent-light); padding: 14px; border-radius: 12px; font-size: 14px; line-height: 1.45; margin-bottom: 14px; }
-        .saved-note { background: var(--bg-card); border: 1px solid var(--border); padding: 15px; border-radius: 14px; margin-bottom: 12px; font-size: 14.5px; line-height: 1.55; box-shadow: var(--shadow); }
-        .saved-note-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-        .saved-note-date { font-size: 11px; color: var(--text-secondary); }
+        .chat-bar { display: flex; gap: 8px; }
+        .chat-bar input { flex: 1; padding: 12px 14px; border: 1px solid var(--border); border-radius: 12px; background: var(--card); font-size: 15px; outline: none; }
+        .chat-bar button { background: var(--accent); color: #fff; border: none; border-radius: 12px; padding: 0 18px; font-weight: 600; cursor: pointer; }
+        .note-card { background: var(--card); border: 1px solid var(--border); padding: 15px; border-radius: 14px; margin-bottom: 12px; font-size: 14.5px; line-height: 1.55; }
+        .note-head { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-bottom: 8px; }
         .del-btn { background: none; border: none; color: #B05A5A; font-size: 12px; cursor: pointer; }
-        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 50; align-items: center; justify-content: center; padding: 18px; }
-        .modal-overlay.open { display: flex; }
-        .modal-box { background: var(--bg-card); width: 100%; max-width: 410px; border-radius: 20px; padding: 22px; box-shadow: 0 12px 40px rgba(0,0,0,0.18); max-height: 90vh; overflow-y: auto; }
-        .donate-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin: 14px 0 10px; }
-        .donate-chip { padding: 10px 8px; border-radius: 12px; border: 1px solid var(--border); background: var(--bg-main); font-size: 14px; font-weight: 600; color: var(--text-primary); cursor: pointer; text-align: center; }
-        .donate-chip.active { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
-        .field-input { width: 100%; padding: 11px 12px; border: 1px solid var(--border); border-radius: 12px; font-size: 14px; outline: none; background: var(--bg-main); margin-bottom: 12px; }
-        .promo-box { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border); }
-        nav { position: fixed; bottom: 0; width: 100%; max-width: 480px; background: var(--bg-card); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 10px 0 14px; z-index: 20; }
-        .nav-item { background: none; border: none; display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--text-secondary); font-size: 11px; cursor: pointer; }
-        .nav-item.active { color: var(--accent); font-weight: 600; }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 50; align-items: center; justify-content: center; padding: 18px; }
+        .modal.open { display: flex; }
+        .modal-card { background: var(--card); width: 100%; max-width: 410px; border-radius: 20px; padding: 22px; max-height: 90vh; overflow-y: auto; }
+        .pay-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin: 14px 0 10px; }
+        .pay-chip { padding: 10px; border-radius: 12px; border: 1px solid var(--border); background: var(--bg); font-size: 14px; font-weight: 600; cursor: pointer; text-align: center; }
+        .pay-chip.active { background: var(--accent-bg); border-color: var(--accent); color: var(--accent); }
+        .field { width: 100%; padding: 11px 12px; border: 1px solid var(--border); border-radius: 12px; font-size: 14px; outline: none; background: var(--bg); margin-bottom: 12px; }
+        nav { position: fixed; bottom: 0; width: 100%; max-width: 480px; background: var(--card); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 10px 0 14px; z-index: 20; }
+        .nav-btn { background: none; border: none; display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--muted); font-size: 11px; cursor: pointer; }
+        .nav-btn.active { color: var(--accent); font-weight: 600; }
         .nav-icon { font-size: 20px; }
     </style>
 </head>
 <body>
-   <div class="app-container">
+    <div class="app">
     <header>
         <div class="logo"><div class="logo-icon">✦</div><span>Свет Слова</span></div>
-        <button class="icon-btn" onclick="openSupportModal()">♥ Поддержать</button>
+        <button class="pill-btn" onclick="openModal()">♥ Поддержать</button>
     </header>
     <main>
         <div id="screen-home" class="screen active">
             <div class="card">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; gap: 6px;">
-                    <span class="badge" style="margin-bottom: 0;">Слово дня</span>
-                    <div style="display: flex; gap: 6px;">
-                        <button class="msg-act-btn" id="daily-fav-btn" style="padding: 4px 10px;" onclick="saveDailyToFav(this)">☆ В избранное</button>
-                        <button class="msg-act-btn" style="padding: 4px 10px;" onclick="shareDailyWord()">↗ Поделиться</button>
+                <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;">
+                    <span class="badge">Слово дня</span>
+                    <div style="display:flex;gap:6px;">
+                        <button class="mini-btn" onclick="saveDaily(this)">☆ В избранное</button>
+                        <button class="mini-btn" onclick="shareDaily()">↗ Поделиться</button>
                     </div>
                 </div>
-                <div class="quote-text" id="daily-quote">«Господь — Пастырь мой; я ни в чем не буду нуждаться: Он покоит меня на злачных пажитях и водит меня к водам тихим.»</div>
-                <div class="quote-source" id="daily-source">Псалтирь, Псалом 22, стихи 1–2</div>
-                <div class="quote-meaning" id="daily-meaning"><strong>Смысл для жизни:</strong> Когда душа мечется в суете, святитель Иоанн Златоуст напоминает: доверившийся Богу обретает внутренний покой даже посреди житейских бурь.</div>
+                <div class="quote-text" id="d-quote">«Господь — Пастырь мой; я ни в чем не буду нуждаться: Он покоит меня на злачных пажитях и водит меня к водам тихим.»</div>
+                <div class="quote-source" id="d-source">Псалтирь, Псалом 22, стихи 1–2</div>
+                <div class="quote-meaning" id="d-meaning"><strong>Смысл для жизни:</strong> Когда душа мечется в суете, святитель Иоанн Златоуст напоминает: доверившийся Богу обретает внутренний покой даже посреди житейских бурь.</div>
             </div>
-            <div class="limit-bar">
-                <span id="limit-text-home">Бесплатно сегодня: 3 из 3</span>
-                <button class="limit-link" id="limit-btn-home" onclick="openSupportModal()">Открыть безлимит</button>
-            </div>
-            <div class="section-title">Что сейчас на сердце?</div>
-            <div class="section-subtitle">Выберите глубину ответа, готовую тему или опишите вашу ситуацию:</div>
-            <div class="depth-toggle">
+            <div class="limit-bar"><span id="lim-home">Бесплатно сегодня: 3 из 3</span><button class="link-btn" id="btn-home" onclick="openModal()">Открыть безлимит</button></div>
+            <div class="title">Что сейчас на сердце?</div>
+            <div class="subtitle">Выберите глубину ответа, готовую тему или опишите ситуацию:</div>
+            <div class="depth-row">
                 <button class="depth-btn active" data-depth="short" onclick="setDepth('short')">Кратко (быстрая опора)</button>
                 <button class="depth-btn" data-depth="deep" onclick="setDepth('deep')">Глубоко (подробный разбор) 🔒</button>
             </div>
-            <div class="topics-grid">
-                <button class="topic-chip" onclick="quickAsk('Меня одолевает сильная тревога и страх за будущее')">Тревога и страх</button>
-                <button class="topic-chip" onclick="quickAsk('Мне тяжело простить обиду близкому человеку')">Обида и прощение</button>
-                <button class="topic-chip" onclick="quickAsk('Я стою перед сложным выбором и боюсь ошибиться')">Сложный выбор</button>
-                <button class="topic-chip" onclick="quickAsk('В семье сейчас недопонимание и ссоры')">Семейный кризис</button>
+            <div class="chips">
+                <button class="chip" onclick="quickAsk('Меня одолевает сильная тревога и страх за будущее')">Тревога и страх</button>
+                <button class="chip" onclick="quickAsk('Мне тяжело простить обиду близкому человеку')">Обида и прощение</button>
+                <button class="chip" onclick="quickAsk('Я стою перед сложным выбором и боюсь ошибиться')">Сложный выбор</button>
+                <button class="chip" onclick="quickAsk('В семье сейчас недопонимание и ссоры')">Семейный кризис</button>
             </div>
-            <textarea id="home-input" class="input-box" placeholder="Опишите вашу ситуацию или вопрос по Писанию..."></textarea>
-            <button class="primary-btn" onclick="startChatFromHome()">Получить слово наставления</button>
-
-            <div class="home-footer">
-                <p>«Свет Слова» — это справочник-навигатор по Священному Писанию и святоотеческому наследию. Сервис помогает найти духовную опору, но не заменяет живого общения со священником, участия в Таинствах Церкви и помощи врача.</p>
+            <textarea id="home-input" class="box" placeholder="Опишите вашу ситуацию или вопрос по Писанию..."></textarea>
+            <button class="btn-main" onclick="startFromHome()">Получить слово наставления</button>
+            <div class="footer">
+                <p>«Свет Слова» — справочник-навигатор по Священному Писанию и святоотеческому наследию. Сервис не заменяет живого общения со священником, участия в Таинствах Церкви и помощи врача.</p>
+                <p><a href="/offer" target="_blank">Публичная оферта</a> • Самозанятый Гуридов Герман Геннадьевич, ИНН 190101683586 • svetslova.help@mail.ru</p>
             </div>
         </div>
+
         <div id="screen-chat" class="screen">
             <div class="limit-bar">
-                <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-                    <span id="limit-text-chat">Бесплатно сегодня: 3 из 3</span>
-                    <button class="limit-link" id="limit-btn-chat" onclick="openSupportModal()">Открыть безлимит</button>
+                <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                    <span id="lim-chat">Бесплатно сегодня: 3 из 3</span>
+                    <button class="link-btn" id="btn-chat" onclick="openModal()">Открыть безлимит</button>
                 </div>
-                <button class="reset-chat-btn" onclick="resetChat()">↺ Новая тема</button>
+                <button class="mini-btn" onclick="resetChat()">↺ Новая тема</button>
             </div>
-            <div class="chat-messages" id="chat-box">
+            <div class="messages" id="chat-box">
                 <div class="msg msg-bot">Здравствуй. Расскажи своими словами, что сейчас на душе или в какой ситуации нужна опора — поговорим спокойно и поищем ответ в Писании и опыте святых отцов.</div>
             </div>
-            <div class="depth-toggle">
+            <div class="depth-row">
                 <button class="depth-btn active" data-depth="short" onclick="setDepth('short')">Кратко (быстрая опора)</button>
                 <button class="depth-btn" data-depth="deep" onclick="setDepth('deep')">Глубоко (подробный разбор) 🔒</button>
             </div>
-            <div class="chat-input-bar">
-                <input type="text" id="chat-input" placeholder="Напишите ваш вопрос..." onkeypress="if(event.key==='Enter') sendMessage()">
-                <button onclick="sendMessage()">→</button>
+            <div class="chat-bar">
+                <input type="text" id="chat-input" placeholder="Напишите ваш вопрос..." onkeypress="if(event.key==='Enter') sendMsg()">
+                <button onclick="sendMsg()">→</button>
             </div>
         </div>
+
         <div id="screen-fav" class="screen">
-            <div class="section-title">Избранные наставления</div>
-            <div class="section-subtitle">Важные слова, цитаты и молитвы, которые вы сохранили. Хранятся только на вашем устройстве.</div>
+            <div class="title">Избранные наставления</div>
+            <div class="subtitle">Сохраненные слова, цитаты и молитвы. Хранятся только на вашем телефоне.</div>
             <div id="fav-list"></div>
         </div>
+
         <div id="screen-diary" class="screen">
-            <div class="section-title">Дневник совести</div>
-            <div class="section-subtitle">Личное пространство для самоанализа и подготовки к беседе со священником. Записи хранятся только на вашем телефоне.</div>
-            <div class="diary-question"><strong>Вопрос для размышления:</strong><br>Был ли сегодня момент, когда раздражение, гордость или страх взяли верх над любовью и терпением к ближнему?</div>
-            <textarea id="diary-input" class="input-box" placeholder="Запишите ваши мысли здесь..."></textarea>
-            <button class="primary-btn" onclick="saveNote()">Сохранить запись</button>
-            <div id="notes-list" style="margin-top: 20px;"></div>
+            <div class="title">Дневник совести</div>
+            <div class="subtitle">Личные заметки для самоанализа и подготовки к исповеди. Хранятся только на вашем телефоне.</div>
+            <div style="background:var(--accent-bg);padding:14px;border-radius:12px;font-size:14px;line-height:1.45;margin-bottom:14px;"><strong>Вопрос для размышления:</strong><br>Был ли сегодня момент, когда раздражение, гордость или страх взяли верх над любовью и терпением к ближнему?</div>
+            <textarea id="diary-input" class="box" placeholder="Запишите ваши мысли здесь..."></textarea>
+            <button class="btn-main" onclick="saveNote()">Сохранить запись</button>
+            <div id="notes-list" style="margin-top:20px;"></div>
         </div>
     </main>
     <nav>
-        <button class="nav-item active" id="nav-home" onclick="switchTab('home')"><span class="nav-icon">⌂</span><span>Главная</span></button>
-        <button class="nav-item" id="nav-chat" onclick="switchTab('chat')"><span class="nav-icon">✉</span><span>Помощник</span></button>
-        <button class="nav-item" id="nav-fav" onclick="switchTab('fav')"><span class="nav-icon">★</span><span>Избранное</span></button>
-        <button class="nav-item" id="nav-diary" onclick="switchTab('diary')"><span class="nav-icon">✎</span><span>Дневник</span></button>
+        <button class="nav-btn active" id="nav-home" onclick="tab('home')"><span class="nav-icon">⌂</span><span>Главная</span></button>
+        <button class="nav-btn" id="nav-chat" onclick="tab('chat')"><span class="nav-icon">✉</span><span>Помощник</span></button>
+        <button class="nav-btn" id="nav-fav" onclick="tab('fav')"><span class="nav-icon">★</span><span>Избранное</span></button>
+        <button class="nav-btn" id="nav-diary" onclick="tab('diary')"><span class="nav-icon">✎</span><span>Дневник</span></button>
     </nav>
 </div>
 
-<div class="modal-overlay" id="support-modal">
-    <div class="modal-box">
-        <span class="badge">Поддержка проекта</span>
-        <div class="section-title">Поддержать развитие «Свет Слова»</div>
-        <div class="section-subtitle" style="margin-bottom: 10px;">
-            Сервис работает без рекламы благодаря вашему участию. Собранные средства идут на оплату вычислительных серверов и дальнейшее развитие приложения.
+<div class="modal" id="pay-modal">
+    <div class="modal-card">
+        <span class="badge">Расширенный доступ</span>
+        <div class="title" style="margin-top:10px;">Поддержать развитие «Свет Слова»</div>
+        <div class="subtitle">Сервис работает без рекламы. Расширенный доступ на <strong>30 дней</strong> (безлимитные вопросы и глубокий разбор) открывается при оплате <strong>от 150 ₽</strong> (можно указать любую сумму выше).</div>
+        <div class="pay-grid">
+            <button class="pay-chip" onclick="setSum(150,this)">150 ₽</button>
+            <button class="pay-chip active" onclick="setSum(300,this)">300 ₽</button>
+            <button class="pay-chip" onclick="setSum(500,this)">500 ₽</button>
+            <button class="pay-chip" onclick="customSum(this)">Любая сумма</button>
         </div>
-        <div class="section-subtitle" style="font-size: 13px; color: var(--text-primary);">
-            В благодарность за любую сумму поддержки мы откроем вам <strong>безлимитный доступ и режим глубокого разбора на 30 дней</strong>.
-        </div>
-
-        <div class="donate-grid">
-            <button class="donate-chip" onclick="selectAmount(150, this)">150 ₽</button>
-            <button class="donate-chip active" onclick="selectAmount(300, this)">300 ₽</button>
-            <button class="donate-chip" onclick="selectAmount(500, this)">500 ₽</button>
-            <button class="donate-chip" onclick="selectCustomAmount(this)">Любая сумма</button>
-        </div>
-        <input type="number" id="custom-amount" class="field-input" value="300" min="50" placeholder="Введите вашу сумму (₽)">
-        
-        <button class="primary-btn" onclick="startAutoPay()">Перейти к оплате</button>
-
-        <div class="promo-box">
-            <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 6px;">Уже есть код благодарности? Введите его здесь:</div>
-            <div style="display: flex; gap: 8px;">
-                <input type="text" id="promo-input" class="field-input" style="margin-bottom: 0;" placeholder="Код доступа">
-                <button class="icon-btn" style="border-radius: 12px; padding: 0 14px;" onclick="activatePromo()">OK</button>
+        <input type="number" id="sum-input" class="field" value="300" min="150" placeholder="Введите сумму от 150 ₽">
+        <button class="btn-main" onclick="pay()">Перейти к оплате</button>
+        <div style="font-size:11px;color:var(--muted);text-align:center;margin-top:8px;">Нажимая кнопку, вы принимаете <a href="/offer" target="_blank" style="color:var(--accent);">публичную оферту</a></div>
+        <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border);">
+            <div style="font-size:12px;color:var(--muted);margin-bottom:6px;">Есть код доступа? Введите здесь:</div>
+            <div style="display:flex;gap:8px;">
+                <input type="text" id="promo-input" class="field" style="margin-bottom:0;" placeholder="Код доступа">
+                <button class="pill-btn" style="border-radius:12px;" onclick="usePromo()">OK</button>
             </div>
         </div>
-
-        <button class="icon-btn" style="width: 100%; margin-top: 14px; padding: 10px;" onclick="closeSupportModal()">Закрыть</button>
+        <button class="pill-btn" style="width:100%;margin-top:14px;padding:10px;" onclick="closeModal()">Закрыть</button>
     </div>
 </div>
-    <script>
-    let currentDepth = 'short';
-    let chatHistory = [];
-    const DAILY_LIMIT = 3;
-    const PROMO_CODES = ['BLAGO30', 'SVET30', 'DOBRO'];
+<script>
+    let depth = 'short', history = [];
+    const LIMIT = 3, CODES = ['BLAGO30', 'SVET30', 'DOBRO'];
 
-    const BIBLE_BOOKS = [
-        'Псалтирь (Псалмы царя Давида)',
-        'Книга Притчей Соломоновых',
-        'Послание святого апостола Иакова',
-        'Первое соборное послание апостола Петра',
-        'Послание апостола Павла к Римлянам или Филиппийцам',
-        'Книга Премудрости Иисуса, сына Сирахова',
-        'Евангелие от Луки или от Иоанна',
-        'Первое послание апостола Павла к Коринфянам или Фессалоникийцам'
+    const BOOKS = [
+        'Псалтирь', 'Книга Притчей Соломоновых', 'Послание апостола Иакова',
+        'Первое послание апостола Петра', 'Послание к Римлянам или Филиппийцам',
+        'Книга Премудрости Иисуса, сына Сирахова', 'Евангелие от Луки или от Иоанна'
+    ];
+    const FATHERS = [
+        'прп. Исаак Сирин («Слова подвижнические»)', 'свт. Игнатий Брянчанинов («Аскетические опыты»)',
+        'свт. Тихон Задонский («Сокровище духовное»)', 'прп. Паисий Святогорец («Слова»)',
+        'свт. Феофан Затворник («Письма о христианской жизни»)', 'прп. Амвросий Оптинский («Письма»)',
+        'свт. Василий Великий («Беседы»)', 'прп. Иоанн Лествичник («Лествица»)',
+        'прп. Ефрем Сирин («Творения»)', 'прп. Никодим Святогорец («Невидимая брань»)'
+    ];
+    const ENDINGS = [
+        'Заверши короткой живой молитвой своими словами (2–3 строчки) без вопросов в конце.',
+        'Заверши спокойным теплым напутствием на сегодняшний день без вопросов в конце.',
+        'Заверши одним конкретным житейским вопросом по существу ситуации (не шаблонным вопросом про чувства).',
+        'Заверши одним глубоким вопросом для размышления наедине с совестью, не требующим ответа в чат.',
+        'Заверши кратким предложением разобрать одну из сторон ситуации подробнее, если собеседник захочет.'
     ];
 
-    const CHURCH_FATHERS = [
-        'прп. Исаак Сирин («Слова подвижнические»)',
-        'свт. Игнатий Брянчанинов («Аскетические опыты» или «Приношение современному монашеству»)',
-        'свт. Тихон Задонский («Сокровище духовное, от мира собираемое»)',
-        'прп. Паисий Святогорец («Слова»)',
-        'свт. Феофан Затворник («Письма о христианской жизни»)',
-        'прп. Амвросий Оптинский («Письма к мирским особам»)',
-        'свт. Василий Великий («Беседы»)',
-        'прп. Иоанн Лествичник («Лествица»)',
-        'прп. Ефрем Сирин («Творения»)',
-        'прп. Макарий Оптинский («Письма»)',
-        'свт. Димитрий Ростовский («Творения»)',
-        'прп. Никодим Святогорец («Невидимая брань»)'
-    ];
+    const PROMPT = `Ты — опытный, чуткий православный собеседник, знающий Священное Писание и святых отцов (в духе писем прп. Амвросия Оптинского и свт. Феофана Затворника). Пиши только на живом русском языке, без канцелярита, штампов («Мир вам», «Дорогой друг», «Помните, что Господь...») и без иностранных слов.
+1. Сначала по-человечески откликнись на ситуацию собеседника.
+2. Вплети точную цитату из Синодального перевода Библии с новой строки в тегах [ЦИТАТА]...[/ЦИТАТА] с указанием книги, главы и стиха.
+3. Поделись мыслью святого отца с указанием его имени и труда, дай ясный совет на сегодня.
+Границы: на просьбы погадать или предсказать судьбу отвечай твердым, но теплым отказом; при тяжелом унынии или кризисе мягко советуй обратиться к священнику или врачу. Не выдумывай цитаты, пиши живыми абзацами.`;
 
-    const ENDING_STYLES = [
-        'Заверши ответ короткой, живой молитвой своими словами (2-3 строчки), которую человек может прочитать про себя прямо сейчас. Не задавай никаких вопросов в конце.',
-        'Заверши ответ спокойным, теплым напутствием на сегодняшний день или вечер, оставив человека в тишине и покое. Не задавай никаких вопросов в конце.',
-        'Заверши ответ одним конкретным житейским вопросом по существу ситуации (не шаблонным вопросом про чувства, а по делу), если разговор стоит продолжить.',
-        'Заверши ответ одним глубоким вопросом для внутреннего размышления наедине с совестью, не требующим обязательного ответа в чат.',
-        'Заверши ответ кратким предложением разобрать какую-то одну сторону этой ситуации подробнее, если у собеседника будет на это желание и силы.'
-    ];
+    const isPro = () => Date.now() < Number(localStorage.getItem('svet_pro_until') || 0);
 
-    const BASE_PROMPT = `Ты — опытный, чуткий и мудрый православный собеседник, глубоко знающий Священное Писание и письма святых отцов (в духе писем прп. Амвросия Оптинского и свт. Феофана Затворника). Пиши исключительно на живом, естественном русском языке, без канцелярита, без заученных штампов (не начинай со слов «Мир вам», «Дорогой друг», «Помните, что Господь...») и без единого иностранного слова.
-
-Как вести беседу:
-1. Сначала по-человечески откликнись на конкретную боль или жизненную ситуацию собеседника — так, чтобы он почувствовал, что его действительно услышали и поняли.
-2. Естественно вплети в разговор точную цитату из Синодального перевода Библии, выделив её с новой строки в тегах [ЦИТАТА]...[/ЦИТАТА] с указанием книги, главы и стиха.
-3. Поделись живой мыслью или примером из письма/беседы конкретного святого отца с обязательным указанием его имени и названия труда, а затем дай ясный, приземленный совет на сегодняшний день.
-
-Строгие границы:
-- Если просят погадать или предсказать судьбу — тепло, но твердо объясни, почему в православии не ищут знаков и гаданий, и переведи разговор на доверие Богу.
-- При тяжелом унынии или кризисе прояви искреннее сочувствие и обязательно мягко посоветуй поговорить лично со священником или врачом.
-- Никогда не выдумывай цитаты и не пиши сухими пунктами 1, 2, 3 — говори живыми абзацами.`;
-
-    async function loadDailyWord() {
-        try {
-            const res = await fetch('/api/daily-word');
-            if (!res.ok) return;
-            const data = await res.json();
-            if (data.quote) document.getElementById('daily-quote').textContent = data.quote;
-            if (data.source) document.getElementById('daily-source').textContent = data.source;
-            if (data.meaning) document.getElementById('daily-meaning').innerHTML = '<strong>Смысл для жизни:</strong> ' + data.meaning;
-        } catch (e) {}
-    }
-
-    function getDailyWordText() {
-        const q = document.getElementById('daily-quote').textContent;
-        const s = document.getElementById('daily-source').textContent;
-        const m = document.getElementById('daily-meaning').textContent;
-        return `Слово дня:\n${q}\n(${s})\n\n${m}`;
-    }
-
-    function saveDailyToFav(btn) {
-        saveFavorite(getDailyWordText(), btn);
-    }
-
-    function shareText(text) {
-        const fullText = text.trim() + '\n\n— Из приложения «Свет Слова»: https://svetslova-app.ru';
-        if (navigator.share) {
-            navigator.share({ title: 'Свет Слова', text: fullText }).catch(() => {});
-        } else if (navigator.clipboard) {
-            navigator.clipboard.writeText(fullText);
-            alert('Текст скопирован! Теперь его можно вставить в любое сообщение.');
-        }
-    }
-
-    function shareDailyWord() {
-        shareText(getDailyWordText());
-    }
-
-    function isPro() {
-        const exp = Number(localStorage.getItem('svet_pro_until') || '0');
-        return Date.now() < exp;
-    }
-
-    function getRemainingQuota() {
+    function getQuota() {
         if (isPro()) return 999;
         const today = new Date().toLocaleDateString('ru-RU');
-        const savedDate = localStorage.getItem('svet_q_date');
-        let used = Number(localStorage.getItem('svet_q_used') || '0');
-        if (savedDate !== today) {
-            used = 0;
+        if (localStorage.getItem('svet_q_date') !== today) {
             localStorage.setItem('svet_q_date', today);
             localStorage.setItem('svet_q_used', '0');
         }
-        return Math.max(0, DAILY_LIMIT - used);
+        return Math.max(0, LIMIT - Number(localStorage.getItem('svet_q_used') || 0));
     }
 
-    function consumeQuota() {
-        if (isPro()) return;
-        const today = new Date().toLocaleDateString('ru-RU');
-        const used = Number(localStorage.getItem('svet_q_used') || '0') + 1;
-        localStorage.setItem('svet_q_date', today);
-        localStorage.setItem('svet_q_used', String(used));
-        updateLimitUI();
-    }
-
-    function updateLimitUI() {
-        const pro = isPro();
-        const rem = getRemainingQuota();
-        const txt = pro ? 'Полный доступ активен' : `Бесплатно сегодня: ${rem} из ${DAILY_LIMIT}`;
-        document.getElementById('limit-text-home').textContent = txt;
-        document.getElementById('limit-text-chat').textContent = txt;
-
-        ['limit-btn-home', 'limit-btn-chat'].forEach(id => {
-            const btn = document.getElementById(id);
-            if (pro) {
-                btn.textContent = '✓ Включен';
-                btn.className = 'limit-status-ok';
-                btn.onclick = null;
-            } else {
-                btn.textContent = 'Открыть безлимит';
-                btn.className = 'limit-link';
-                btn.onclick = openSupportModal;
-            }
+    function updateUI() {
+        const pro = isPro(), txt = pro ? 'Полный доступ активен' : `Бесплатно сегодня: ${getQuota()} из ${LIMIT}`;
+        document.getElementById('lim-home').textContent = txt;
+        document.getElementById('lim-chat').textContent = txt;
+        ['btn-home', 'btn-chat'].forEach(id => {
+            const b = document.getElementById(id);
+            b.textContent = pro ? '✓ Включен' : 'Открыть безлимит';
+            b.className = pro ? 'ok-badge' : 'link-btn';
+            b.onclick = pro ? null : openModal;
         });
-
-        document.querySelectorAll('.depth-btn').forEach(btn => {
-            if (btn.dataset.depth === 'deep') {
-                btn.textContent = pro ? 'Глубоко (подробный разбор)' : 'Глубоко (подробный разбор) 🔒';
-            }
+        document.querySelectorAll('.depth-btn').forEach(b => {
+            if (b.dataset.depth === 'deep') b.textContent = pro ? 'Глубоко (подробный разбор)' : 'Глубоко (подробный разбор) 🔒';
         });
     }
 
-    function setDepth(mode) {
-        if (mode === 'deep' && !isPro()) { openSupportModal(); return; }
-        currentDepth = mode;
-        document.querySelectorAll('.depth-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.depth === mode));
+    function setDepth(m) {
+        if (m === 'deep' && !isPro()) return openModal();
+        depth = m;
+        document.querySelectorAll('.depth-btn').forEach(b => b.classList.toggle('active', b.dataset.depth === m));
     }
 
-    function openSupportModal() { document.getElementById('support-modal').classList.add('open'); }
-    function closeSupportModal() { document.getElementById('support-modal').classList.remove('open'); }
+    function openModal() { document.getElementById('pay-modal').classList.add('open'); }
+    function closeModal() { document.getElementById('pay-modal').classList.remove('open'); }
+    function setSum(v, b) { document.getElementById('sum-input').value = v; document.querySelectorAll('.pay-chip').forEach(c => c.classList.remove('active')); b.classList.add('active'); }
+    function customSum(b) { const i = document.getElementById('sum-input'); i.value = ''; i.focus(); document.querySelectorAll('.pay-chip').forEach(c => c.classList.remove('active')); b.classList.add('active'); }
 
-    function selectAmount(val, btn) {
-        document.getElementById('custom-amount').value = val;
-        document.querySelectorAll('.donate-chip').forEach(c => c.classList.remove('active'));
-        btn.classList.add('active');
-    }
-
-    function selectCustomAmount(btn) {
-        const input = document.getElementById('custom-amount');
-        input.value = ''; input.focus();
-        document.querySelectorAll('.donate-chip').forEach(c => c.classList.remove('active'));
-        btn.classList.add('active');
-    }
-
-    async function startAutoPay() {
-        const amount = Number(document.getElementById('custom-amount').value);
-        if (!amount || amount < 50) { alert('Пожалуйста, укажите сумму от 50 ₽'); return; }
+    async function pay() {
+        const amount = Number(document.getElementById('sum-input').value);
+        if (!amount || amount < 150) return alert('Укажите сумму от 150 ₽');
         try {
-            const res = await fetch('/api/pay', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ amount })
-            });
+            const res = await fetch('/api/pay', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ amount }) });
             const data = await res.json();
-            if (data.confirmation_url) { window.location.href = data.confirmation_url; return; }
-            alert(data.message || 'Переход к автооплате...');
-        } catch (e) { alert('Ошибка связи с платежным шлюзом: ' + e.message); }
+            if (data.confirmation_url && data.payment_id) {
+                localStorage.setItem('svet_pending_pay', data.payment_id);
+                location.href = data.confirmation_url;
+                return;
+            }
+            alert(data.message || 'Ошибка оплаты');
+        } catch (e) { alert('Ошибка связи: ' + e.message); }
     }
 
-    function activatePromo() {
-        const code = document.getElementById('promo-input').value.trim().toUpperCase();
-        if (PROMO_CODES.includes(code)) {
-            const thirtyDays = Date.now() + 30 * 24 * 60 * 60 * 1000;
-            localStorage.setItem('svet_pro_until', String(thirtyDays));
-            updateLimitUI();
-            closeSupportModal();
-            alert('Благодарим вас! Безлимитный доступ и глубокий разбор открыты на 30 дней.');
-        } else {
-            alert('Неверный код доступа. Проверьте правильность ввода.');
-        }
+    async function checkPay() {
+        const id = localStorage.getItem('svet_pending_pay');
+        if (!id) return;
+        try {
+            const data = await (await fetch('/api/pay-check?id=' + encodeURIComponent(id))).json();
+            if (data.paid) {
+                localStorage.removeItem('svet_pending_pay');
+                localStorage.setItem('svet_pro_until', String(Date.now() + 30 * 86400000));
+                updateUI();
+                alert('Благодарим! Расширенный доступ открыт на 30 дней.');
+            }
+        } catch (e) {}
     }
-            function switchTab(t) {
+
+    function usePromo() {
+        if (CODES.includes(document.getElementById('promo-input').value.trim().toUpperCase())) {
+            localStorage.setItem('svet_pro_until', String(Date.now() + 30 * 86400000));
+            updateUI(); closeModal();
+            alert('Расширенный доступ открыт на 30 дней.');
+        } else alert('Неверный код доступа.');
+    }
+        function tab(t) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-        document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
         document.getElementById('screen-' + t).classList.add('active');
         document.getElementById('nav-' + t).classList.add('active');
-        if (t === 'fav') renderFavorites();
+        if (t === 'fav') renderFavs();
     }
 
     function resetChat() {
-        chatHistory = [];
-        document.getElementById('chat-box').innerHTML = '<div class="msg msg-bot">Здравствуй. Начинаем новую беседу. Расскажи своими словами, что сейчас на душе или в какой ситуации нужна опора.</div>';
+        history = [];
+        document.getElementById('chat-box').innerHTML = '<div class="msg msg-bot">Здравствуй. Начинаем новую беседу. Расскажи, что сейчас на душе или в какой ситуации нужна опора.</div>';
     }
 
-    function cleanEnglish(str) {
-        return str.replace(/\s+[a-zA-Z]{3,}/g, '');
+    const dailyText = () => `Слово дня:\n${document.getElementById('d-quote').textContent}\n(${document.getElementById('d-source').textContent})\n\n${document.getElementById('d-meaning').textContent}`;
+    const saveDaily = (btn) => saveFav(dailyText(), btn);
+    const shareDaily = () => share(dailyText());
+
+    function share(text) {
+        const full = text.trim() + '\n\n— Из приложения «Свет Слова»: https://svetslova-app.ru';
+        if (navigator.share) navigator.share({ title: 'Свет Слова', text: full }).catch(() => {});
+        else if (navigator.clipboard) { navigator.clipboard.writeText(full); alert('Скопировано!'); }
     }
 
-    function formatBotReply(raw) {
-        let clean = cleanEnglish(raw);
-        clean = clean.replace(/\[ЦИТАТА\]([\s\S]*?)\[\/ЦИТАТА\]/g, '<div class="bot-quote-box">$1</div>');
-        const paragraphs = clean.split(/\n\s*\n/).map(p => {
-            const trimmed = p.trim();
-            if (trimmed.startsWith('<div class="bot-quote-box">')) return trimmed;
-            return '<p>' + trimmed.replace(/\n/g, '<br>') + '</p>';
-        });
-        return paragraphs.join('');
-    }
-
-    function saveFavorite(plainText, btn) {
+    function saveFav(text, btn) {
         const favs = JSON.parse(localStorage.getItem('svet_favs') || '[]');
-        const alreadySaved = favs.some(f => f.text.trim() === plainText.trim());
-        if (!alreadySaved) {
-            favs.unshift({ id: Date.now(), date: new Date().toLocaleDateString('ru-RU'), text: plainText });
+        if (!favs.some(f => f.text.trim() === text.trim())) {
+            favs.unshift({ id: Date.now(), date: new Date().toLocaleDateString('ru-RU'), text });
             localStorage.setItem('svet_favs', JSON.stringify(favs));
         }
-        btn.textContent = '★ Сохранено';
-        btn.style.color = '#B89B5E';
-        btn.disabled = true;
+        btn.textContent = '★ Сохранено'; btn.style.color = '#B89B5E'; btn.disabled = true;
     }
 
-    function deleteFavorite(id) {
-        const favs = JSON.parse(localStorage.getItem('svet_favs') || '[]').filter(f => f.id !== id);
-        localStorage.setItem('svet_favs', JSON.stringify(favs));
-        renderFavorites();
+    function delFav(id) {
+        localStorage.setItem('svet_favs', JSON.stringify(JSON.parse(localStorage.getItem('svet_favs') || '[]').filter(f => f.id !== id)));
+        renderFavs();
     }
 
-    function renderFavorites() {
+    function renderFavs() {
         const favs = JSON.parse(localStorage.getItem('svet_favs') || '[]');
-        const list = document.getElementById('fav-list');
-        if (!favs.length) {
-            list.innerHTML = '<div style="font-size: 14px; color: var(--text-secondary);">Пока нет сохраненных наставлений. Нажмите «☆ В избранное» в Слове дня или под ответом помощника.</div>';
-            return;
-        }
-        list.innerHTML = favs.map(f => `
-            <div class="saved-note">
-                <div class="saved-note-header">
-                    <span class="saved-note-date">${f.date}</span>
-                    <button class="del-btn" onclick="deleteFavorite(${f.id})">Удалить</button>
-                </div>
-                <div>${f.text.replace(/\n/g, '<br>')}</div>
-            </div>
-        `).join('');
+        document.getElementById('fav-list').innerHTML = favs.length ? favs.map(f => `<div class="note-card"><div class="note-head"><span>${f.date}</span><button class="del-btn" onclick="delFav(${f.id})">Удалить</button></div><div>${f.text.replace(/\n/g, '<br>')}</div></div>`).join('') : '<div class="subtitle">Пока нет сохраненных наставлений.</div>';
     }
 
-    function appendMessage(text, isUser) {
+    function addMsg(text, isUser) {
         const box = document.getElementById('chat-box');
         const div = document.createElement('div');
         div.className = 'msg ' + (isUser ? 'msg-user' : 'msg-bot');
@@ -462,92 +331,56 @@
         return div;
     }
 
-    async function askAI(userText) {
-        if (getRemainingQuota() <= 0) { openSupportModal(); return; }
+    async function ask(text) {
+        if (getQuota() <= 0) return openModal();
+        const loader = addMsg('Читаю и подбираю слово...', false);
+        const b = BOOKS.at(Math.floor(Math.random() * BOOKS.length));
+        const f = FATHERS.at(Math.floor(Math.random() * FATHERS.length));
+        const e = ENDINGS.at(Math.floor(Math.random() * ENDINGS.length));
+        const dRule = depth === 'short' ? '\n\nОБЪЕМ: КРАТКО (2–3 емких абзаца).' : '\n\nОБЪЕМ: ГЛУБОКО (4–5 абзацев с обстоятельным разбором).';
+        const vRule = `\n\nОРИЕНТИР: если уместно, обратись к разделу «${b}» и опыту: ${f}. Не повторяй прошлые цитаты.\nФИНАЛ: ${e}`;
 
-        const loadingMsg = appendMessage('Читаю и подбираю слово...', false);
-        const randomBible = BIBLE_BOOKS.at(Math.floor(Math.random() * BIBLE_BOOKS.length));
-        const randomFather = CHURCH_FATHERS.at(Math.floor(Math.random() * CHURCH_FATHERS.length));
-        const randomEnding = ENDING_STYLES.at(Math.floor(Math.random() * ENDING_STYLES.length));
-
-        const depthRule = currentDepth === 'short'
-            ? '\n\nОБЪЕМ ОТВЕТА: КРАТКО И ЖИВО. Ответь как в коротком теплом письме: 2-3 емких абзаца (живой отклик, цитата Писания в тегах [ЦИТАТА]...[/ЦИТАТА] и короткая мысль святого отца с простым шагом на сегодня).'
-            : '\n\nОБЪЕМ ОТВЕТА: ГЛУБОКАЯ БЕСЕДА. Разбери ситуацию обстоятельно и сердечно (4-5 абзацев), с глубоким святоотеческим пояснением и конкретным духовным советом.';
-
-        const varietyRule = `\n\nОРИЕНТИР ПО ИСТОЧНИКАМ: Если уместно к вопросу, обратись к разделу: ${randomBible} и опыту: ${randomFather}. Не повторяй цитаты из прошлых сообщений.\n\nФИНАЛ ОТВЕТА: ${randomEnding}`;
-
-        chatHistory.push({ role: 'user', content: userText });
-        if (chatHistory.length > 8) chatHistory = chatHistory.slice(-8);
+        history.push({ role: 'user', content: text });
+        if (history.length > 8) history = history.slice(-8);
 
         try {
-            const response = await fetch('/api/chat', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    messages: [
-                        { role: 'system', content: BASE_PROMPT + depthRule + varietyRule },
-                        ...chatHistory
-                    ]
-                })
-            });
+            const res = await fetch('/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ messages: [{ role: 'system', content: PROMPT + dRule + vRule }, ...history] }) });
+            const data = await res.json();
+            if (!res.ok) return loader.textContent = 'Ошибка: ' + JSON.stringify(data);
+            const raw = data.choices && data.choices.at(0) && data.choices.at(0).message ? data.choices.at(0).message.content : '';
+            if (!raw) return loader.textContent = 'Пустой ответ.';
 
-            const data = await response.json();
-            if (!response.ok) { loadingMsg.textContent = 'Ошибка (' + response.status + '): ' + JSON.stringify(data); return; }
+            history.push({ role: 'assistant', content: raw });
+            if (!isPro()) { localStorage.setItem('svet_q_used', String(Number(localStorage.getItem('svet_q_used') || 0) + 1)); updateUI(); }
 
-            const replyText = data.choices && data.choices.at(0) && data.choices.at(0).message ? data.choices.at(0).message.content : '';
-            if (!replyText) { loadingMsg.textContent = 'Пустой ответ от сервера.'; return; }
+            const clean = raw.replace(/\s+[a-zA-Z]{3,}/g, '');
+            const plain = clean.replace(/\[\/?ЦИТАТА\]/g, '');
+            loader.innerHTML = clean.replace(/\[ЦИТАТА\]([\s\S]*?)\[\/ЦИТАТА\]/g, '<div class="quote-box">$1</div>').split(/\n\s*\n/).map(p => p.trim().startsWith('<div') ? p.trim() : `<p>${p.trim().replace(/\n/g, '<br>')}</p>`).join('');
 
-            chatHistory.push({ role: 'assistant', content: replyText });
-            consumeQuota();
-
-            const cleanPlain = cleanEnglish(replyText).replace(/\[\/?ЦИТАТА\]/g, '');
-            loadingMsg.innerHTML = formatBotReply(replyText);
-
-            const actions = document.createElement('div');
-            actions.className = 'msg-actions';
-
-            const favBtn = document.createElement('button');
-            favBtn.className = 'msg-act-btn';
-            favBtn.textContent = '☆ В избранное';
-            favBtn.onclick = () => saveFavorite(cleanPlain, favBtn);
-
-            const shareBtn = document.createElement('button');
-            shareBtn.className = 'msg-act-btn';
-            shareBtn.textContent = '↗ Поделиться';
-            shareBtn.onclick = () => shareText(cleanPlain);
-
-            actions.appendChild(favBtn);
-            actions.appendChild(shareBtn);
-            loadingMsg.appendChild(actions);
-        } catch (err) { loadingMsg.textContent = 'Ошибка соединения: ' + err.message; }
+            const bar = document.createElement('div'); bar.className = 'msg-actions';
+            const b1 = document.createElement('button'); b1.className = 'mini-btn'; b1.textContent = '☆ В избранное'; b1.onclick = () => saveFav(plain, b1);
+            const b2 = document.createElement('button'); b2.className = 'mini-btn'; b2.textContent = '↗ Поделиться'; b2.onclick = () => share(plain);
+            bar.append(b1, b2); loader.appendChild(bar);
+        } catch (err) { loader.textContent = 'Ошибка сети: ' + err.message; }
     }
 
-    function quickAsk(text) {
-        if (getRemainingQuota() <= 0) { openSupportModal(); return; }
-        switchTab('chat');
-        appendMessage(text, true);
-        askAI(text);
-    }
-    function startChatFromHome() { const i = document.getElementById('home-input'); const t = i.value.trim(); if (!t) return; i.value = ''; quickAsk(t); }
-    function sendMessage() {
-        const i = document.getElementById('chat-input'); const t = i.value.trim(); if (!t) return;
-        if (getRemainingQuota() <= 0) { openSupportModal(); return; }
-        i.value = ''; appendMessage(t, true); askAI(t);
-    }
-    function saveNote() {
-        const i = document.getElementById('diary-input'); const t = i.value.trim(); if (!t) return;
-        const notes = JSON.parse(localStorage.getItem('svet_notes') || '[]');
-        notes.unshift({ date: new Date().toLocaleDateString('ru-RU'), text: t });
-        localStorage.setItem('svet_notes', JSON.stringify(notes)); i.value = ''; renderNotes();
-    }
-    function renderNotes() {
-        const notes = JSON.parse(localStorage.getItem('svet_notes') || '[]');
-        document.getElementById('notes-list').innerHTML = notes.map(n => `<div class="saved-note"><div class="saved-note-date">${n.date}</div><div>${n.text}</div></div>`).join('');
-    }
-    loadDailyWord();
-    updateLimitUI();
-    renderNotes();
-    if ('serviceWorker' in navigator) { navigator.serviceWorker.register('/sw.js'); }
+    function quickAsk(t) { if (getQuota() <= 0) return openModal(); tab('chat'); addMsg(t, true); ask(t); }
+    function startFromHome() { const i = document.getElementById('home-input'), t = i.value.trim(); if (t) { i.value = ''; quickAsk(t); } }
+    function sendMsg() { const i = document.getElementById('chat-input'), t = i.value.trim(); if (!t) return; if (getQuota() <= 0) return openModal(); i.value = ''; addMsg(t, true); ask(t); }
+    function saveNote() { const i = document.getElementById('diary-input'), t = i.value.trim(); if (!t) return; const n = JSON.parse(localStorage.getItem('svet_notes') || '[]'); n.unshift({ date: new Date().toLocaleDateString('ru-RU'), text: t }); localStorage.setItem('svet_notes', JSON.stringify(n)); i.value = ''; renderNotes(); }
+    function renderNotes() { document.getElementById('notes-list').innerHTML = JSON.parse(localStorage.getItem('svet_notes') || '[]').map(n => `<div class="note-card"><div class="note-head"><span>${n.date}</span></div><div>${n.text}</div></div>`).join(''); }
+
+    (async () => {
+        try {
+            const d = await (await fetch('/api/daily-word')).json();
+            if (d.quote) document.getElementById('d-quote').textContent = d.quote;
+            if (d.source) document.getElementById('d-source').textContent = d.source;
+            if (d.meaning) document.getElementById('d-meaning').innerHTML = '<strong>Смысл для жизни:</strong> ' + d.meaning;
+        } catch (e) {}
+    })();
+
+    checkPay(); updateUI(); renderNotes();
+    if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');
 </script>
 </body>
 </html>
