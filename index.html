@@ -36,6 +36,7 @@
         .section-subtitle { font-size: 14px; color: var(--text-secondary); margin-bottom: 14px; line-height: 1.4; }
         .limit-bar { display: flex; justify-content: space-between; align-items: center; background: var(--accent-light); border: 1px solid var(--border); padding: 8px 14px; border-radius: 12px; font-size: 12.5px; color: var(--text-primary); margin-bottom: 14px; }
         .limit-link { color: var(--accent); font-weight: 600; cursor: pointer; text-decoration: underline; background: none; border: none; font-size: 12.5px; }
+        .limit-status-ok { color: #5A8B5E; font-weight: 600; font-size: 12px; }
         .depth-toggle { display: flex; gap: 8px; margin-bottom: 14px; }
         .depth-btn { flex: 1; padding: 10px 8px; border-radius: 12px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-secondary); font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s; }
         .depth-btn.active { background: var(--accent-light); color: var(--accent); border-color: var(--accent); font-weight: 600; }
@@ -84,9 +85,12 @@
     <main>
         <div id="screen-home" class="screen active">
             <div class="card">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; gap: 6px;">
                     <span class="badge" style="margin-bottom: 0;">Слово дня</span>
-                    <button class="msg-act-btn" style="padding: 4px 10px;" onclick="shareDailyWord()">↗ Поделиться</button>
+                    <div style="display: flex; gap: 6px;">
+                        <button class="msg-act-btn" id="daily-fav-btn" style="padding: 4px 10px;" onclick="saveDailyToFav(this)">☆ В избранное</button>
+                        <button class="msg-act-btn" style="padding: 4px 10px;" onclick="shareDailyWord()">↗ Поделиться</button>
+                    </div>
                 </div>
                 <div class="quote-text" id="daily-quote">«Господь — Пастырь мой; я ни в чем не буду нуждаться: Он покоит меня на злачных пажитях и водит меня к водам тихим.»</div>
                 <div class="quote-source" id="daily-source">Псалтирь, Псалом 22, стихи 1–2</div>
@@ -94,7 +98,7 @@
             </div>
             <div class="limit-bar">
                 <span id="limit-text-home">Бесплатно сегодня: 3 из 3</span>
-                <button class="limit-link" onclick="openSupportModal()">Открыть безлимит</button>
+                <button class="limit-link" id="limit-btn-home" onclick="openSupportModal()">Открыть безлимит</button>
             </div>
             <div class="section-title">Что сейчас на сердце?</div>
             <div class="section-subtitle">Выберите глубину ответа, готовую тему или опишите вашу ситуацию:</div>
@@ -114,7 +118,7 @@
         <div id="screen-chat" class="screen">
             <div class="limit-bar">
                 <span id="limit-text-chat">Бесплатно сегодня: 3 из 3</span>
-                <button class="limit-link" onclick="openSupportModal()">Открыть безлимит</button>
+                <button class="limit-link" id="limit-btn-chat" onclick="openSupportModal()">Открыть безлимит</button>
             </div>
             <div class="chat-messages" id="chat-box">
                 <div class="msg msg-bot">Здравствуй. Расскажи своими словами, что сейчас на душе или в какой ситуации нужна опора — поговорим спокойно и поищем ответ в Писании и опыте святых отцов.</div>
@@ -130,7 +134,7 @@
         </div>
         <div id="screen-fav" class="screen">
             <div class="section-title">Избранные наставления</div>
-            <div class="section-subtitle">Важные слова, цитаты и молитвы, которые вы сохранили из бесед. Хранятся только на вашем устройстве.</div>
+            <div class="section-subtitle">Важные слова, цитаты и молитвы, которые вы сохранили. Хранятся только на вашем устройстве.</div>
             <div id="fav-list"></div>
         </div>
         <div id="screen-diary" class="screen">
@@ -245,6 +249,17 @@
         } catch (e) {}
     }
 
+    function getDailyWordText() {
+        const q = document.getElementById('daily-quote').textContent;
+        const s = document.getElementById('daily-source').textContent;
+        const m = document.getElementById('daily-meaning').textContent;
+        return `Слово дня:\n${q}\n(${s})\n\n${m}`;
+    }
+
+    function saveDailyToFav(btn) {
+        saveFavorite(getDailyWordText(), btn);
+    }
+
     function shareText(text) {
         const fullText = text.trim() + '\n\n— Из приложения «Свет Слова»: https://svetslova-app.ru';
         if (navigator.share) {
@@ -256,10 +271,7 @@
     }
 
     function shareDailyWord() {
-        const q = document.getElementById('daily-quote').textContent;
-        const s = document.getElementById('daily-source').textContent;
-        const m = document.getElementById('daily-meaning').textContent;
-        shareText(`Слово дня:\n${q}\n(${s})\n\n${m}`);
+        shareText(getDailyWordText());
     }
 
     function isPro() {
@@ -295,6 +307,20 @@
         const txt = pro ? 'Полный доступ активен (Безлимит)' : `Бесплатно сегодня: ${rem} из ${DAILY_LIMIT}`;
         document.getElementById('limit-text-home').textContent = txt;
         document.getElementById('limit-text-chat').textContent = txt;
+
+        ['limit-btn-home', 'limit-btn-chat'].forEach(id => {
+            const btn = document.getElementById(id);
+            if (pro) {
+                btn.textContent = '✓ Включен';
+                btn.className = 'limit-status-ok';
+                btn.onclick = null;
+            } else {
+                btn.textContent = 'Открыть безлимит';
+                btn.className = 'limit-link';
+                btn.onclick = openSupportModal;
+            }
+        });
+
         document.querySelectorAll('.depth-btn').forEach(btn => {
             if (btn.dataset.depth === 'deep') {
                 btn.textContent = pro ? 'Глубоко (подробный разбор)' : 'Глубоко (подробный разбор) 🔒';
@@ -392,7 +418,7 @@
         const favs = JSON.parse(localStorage.getItem('svet_favs') || '[]');
         const list = document.getElementById('fav-list');
         if (!favs.length) {
-            list.innerHTML = '<div style="font-size: 14px; color: var(--text-secondary);">Пока нет сохраненных наставлений. Нажмите «★ В избранное» под любым ответом помощника.</div>';
+            list.innerHTML = '<div style="font-size: 14px; color: var(--text-secondary);">Пока нет сохраненных наставлений. Нажмите «☆ В избранное» в Слове дня или под ответом помощника.</div>';
             return;
         }
         list.innerHTML = favs.map(f => `
