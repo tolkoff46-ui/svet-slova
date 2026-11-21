@@ -3,7 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Свет Слова — Духовный навигатор</title>
+    <title>Свет Слова — Православный навигатор по Библии и святым отцам</title>
+    <meta name="description" content="Свет Слова — православный справочник-навигатор по Священному Писанию и творениям святых отцов. Ежедневное Слово дня, духовная опора в трудной ситуации, дневник совести.">
+    <meta name="keywords" content="православный навигатор, Библия онлайн, святые отцы, слово дня, толкование Писания, духовная опора, дневник совести, свет слова">
+    <link rel="canonical" href="https://svetslova-app.ru">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Свет Слова">
+    <meta property="og:title" content="Свет Слова — Православный навигатор по Библии и святым отцам">
+    <meta property="og:description" content="Найдите опору в Священном Писании и письмах святых отцов: ежедневное Слово дня, живой разбор жизненных ситуаций и дневник совести.">
+    <meta property="og:url" content="https://svetslova-app.ru">
+    <meta property="og:image" content="https://svetslova-app.ruicon-512.png">
+    <link rel="icon" type="image/png" href="/icon-192.png">
+    <link rel="apple-touch-icon" href="/icon-192.png">
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#B89B5E">
     <style>
@@ -67,9 +78,9 @@
     </style>
 </head>
 <body>
-    <div class="app">
+<div class="app">
     <header>
-        <div class="logo"><div class="logo-icon">✦</div><span>Свет Слова</span></div>
+        <div class="logo"><div class="logo-icon">✦</div><h1 style="font-size:19px;font-weight:600;">Свет Слова</h1></div>
         <button class="pill-btn" onclick="openModal()">♥ Поддержать</button>
     </header>
     <main>
@@ -87,7 +98,7 @@
                 <div class="quote-meaning" id="d-meaning"><strong>Смысл для жизни:</strong> Когда душа мечется в суете, святитель Иоанн Златоуст напоминает: доверившийся Богу обретает внутренний покой даже посреди житейских бурь.</div>
             </div>
             <div class="limit-bar"><span id="lim-home">Бесплатно сегодня: 3 из 3</span><button class="link-btn" id="btn-home" onclick="openModal()">Открыть безлимит</button></div>
-            <div class="title">Что сейчас на сердце?</div>
+            <h2 class="title">Что сейчас на сердце?</h2>
             <div class="subtitle">Выберите глубину ответа, готовую тему или опишите ситуацию:</div>
             <div class="depth-row">
                 <button class="depth-btn active" data-depth="short" onclick="setDepth('short')">Кратко (быстрая опора)</button>
@@ -101,10 +112,10 @@
             </div>
             <textarea id="home-input" class="box" placeholder="Опишите вашу ситуацию или вопрос по Писанию..."></textarea>
             <button class="btn-main" onclick="startFromHome()">Получить слово наставления</button>
-            <div class="footer">
-                <p>«Свет Слова» — справочник-навигатор по Священному Писанию и святоотеческому наследию. Сервис не заменяет живого общения со священником, участия в Таинствах Церкви и помощи врача.</p>
+            <footer class="footer">
+                <p>«Свет Слова» — православный справочник-навигатор по Священному Писанию (Библии) и святоотеческому наследию. Сервис помогает найти цитаты из Евангелия, Псалтири и творений святых отцов, но не заменяет живого общения со священником, участия в Таинствах Церкви и помощи врача.</p>
                 <p><a href="/offer" target="_blank">Публичная оферта и реквизиты</a></p>
-            </div>
+            </footer>
         </div>
 
         <div id="screen-chat" class="screen">
@@ -382,7 +393,6 @@
     checkPay(); updateUI(); renderNotes();
     if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');
 </script>
-    
 <!-- Yandex.Metrika counter -->
 <script type="text/javascript">
     (function(m,e,t,r,i,k,a){
@@ -390,12 +400,10 @@
         m[i].l=1*new Date();
         for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
         k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
-    })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=114457148', 'ym');
-
+    })(window, document,'script','https://yandex.ru', 'ym');
     ym(114457148, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
 </script>
-<noscript><div><img src="https://mc.yandex.ru/watch/114457148" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<noscript><div><img src="https://yandex.ru" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
 <!-- /Yandex.Metrika counter -->
-    
 </body>
 </html>
