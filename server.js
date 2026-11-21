@@ -57,6 +57,20 @@ const ICON_512 = createIcon(512);
 app.get('/icon-192.png', (_, res) => { res.setHeader('Content-Type', 'image/png'); res.send(ICON_192); });
 app.get('/icon-512.png', (_, res) => { res.setHeader('Content-Type', 'image/png'); res.send(ICON_512); });
 
+app.get('/robots.txt', (_, res) => {
+  res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+  res.send(`User-agent: *\nAllow: /\nAllow: /offer\nDisallow: /api/\nSitemap: https://svetslova-app.ru\n`);
+});
+
+app.get('/sitemap.xml', (_, res) => {
+  res.setHeader('Content-Type', 'application/xml; charset=utf-8');
+  res.send(`<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://sitemaps.org">
+  <url><loc>https://svetslova-app.ru</loc><changefreq>daily</changefreq><priority>1.0</priority></url>
+  <url><loc>https://svetslova-app.ruoffer</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+</urlset>`);
+});
+
 app.get('/manifest.json', (_, res) => {
   res.setHeader('Content-Type', 'application/manifest+json');
   res.json({
@@ -87,7 +101,7 @@ app.get('/offer', (_, res) => {
 });
 
 app.use(express.static(__dirname));
-      function callVseGPT(apiKey, messages, temperature = 0.8) {
+                     function callVseGPT(apiKey, messages, temperature = 0.8) {
   return new Promise((resolve, reject) => {
     const postData = JSON.stringify({ model: 'openai/gpt-4o', messages, temperature });
     const req = https.request({
