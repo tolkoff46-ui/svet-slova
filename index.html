@@ -81,7 +81,7 @@
     </style>
 </head>
 <body>
-    <div class="app-container">
+   <div class="app-container">
     <header>
         <div class="logo"><div class="logo-icon">✦</div><span>Свет Слова</span></div>
         <button class="icon-btn" onclick="openSupportModal()">♥ Поддержать</button>
@@ -120,7 +120,6 @@
             <button class="primary-btn" onclick="startChatFromHome()">Получить слово наставления</button>
 
             <div class="home-footer">
-                <p>Часть средств от поддержки проекта направляется на прямую адресную помощь нуждающимся людям — покупку продуктов и лекарств лично из рук в руки, без фондов и посредников.</p>
                 <p>«Свет Слова» — это справочник-навигатор по Священному Писанию и святоотеческому наследию. Сервис помогает найти духовную опору, но не заменяет живого общения со священником, участия в Таинствах Церкви и помощи врача.</p>
             </div>
         </div>
@@ -168,10 +167,10 @@
 
 <div class="modal-overlay" id="support-modal">
     <div class="modal-box">
-        <span class="badge">Поддержка и помощь людям</span>
-        <div class="section-title">Поддержать проект и помочь людям в беде</div>
+        <span class="badge">Поддержка проекта</span>
+        <div class="section-title">Поддержать развитие «Свет Слова»</div>
         <div class="section-subtitle" style="margin-bottom: 10px;">
-            Сервис «Свет Слова» работает без рекламы благодаря вашему участию. Средства идут на оплату вычислительных серверов, а <strong>часть каждого пожертвования мы направляем на прямую адресную помощь нуждающимся людям — покупаем продукты и лекарства и передаем лично из рук в руки, без фондов и посредников</strong>.
+            Сервис работает без рекламы благодаря вашему участию. Собранные средства идут на оплату вычислительных серверов и дальнейшее развитие приложения.
         </div>
         <div class="section-subtitle" style="font-size: 13px; color: var(--text-primary);">
             В благодарность за любую сумму поддержки мы откроем вам <strong>безлимитный доступ и режим глубокого разбора на 30 дней</strong>.
@@ -198,7 +197,7 @@
         <button class="icon-btn" style="width: 100%; margin-top: 14px; padding: 10px;" onclick="closeSupportModal()">Закрыть</button>
     </div>
 </div>
-<script>
+    <script>
     let currentDepth = 'short';
     let chatHistory = [];
     const DAILY_LIMIT = 3;
@@ -389,7 +388,7 @@
             alert('Неверный код доступа. Проверьте правильность ввода.');
         }
     }
-        function switchTab(t) {
+            function switchTab(t) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
         document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
         document.getElementById('screen-' + t).classList.add('active');
