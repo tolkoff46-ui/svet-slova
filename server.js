@@ -10,11 +10,11 @@ function createAppIconPng(size) {
   for (let n = 0; n < 256; n++) {
     let c = n;
     for (let k = 0; k < 8; k++) c = (c & 1) ? (0xedb88320 ^ (c >>> 1)) : (c >>> 1);
-    crcTable[n] = c;
+    crcTable.set([c], n);
   }
   function crc32(buf) {
     let c = 0xffffffff;
-    for (let i = 0; i < buf.length; i++) c = crcTable[(c ^ buf[i]) & 0xff] ^ (c >>> 8);
+    for (let i = 0; i < buf.length; i++) c = crcTable.at((c ^ buf.readUInt8(i)) & 0xff) ^ (c >>> 8);
     return (c ^ 0xffffffff) >>> 0;
   }
   function pngChunk(type, data) {
@@ -38,15 +38,15 @@ function createAppIconPng(size) {
 
   for (let y = 0; y < size; y++) {
     const rowStart = y * rowSize;
-    raw[rowStart] = 0;
+    raw.writeUInt8(0, rowStart);
     for (let x = 0; x < size; x++) {
       const px = rowStart + 1 + x * 4;
       const inVert = Math.abs(x - cx) <= thick && y >= top && y <= bottom;
       const inHoriz = Math.abs(y - cy) <= thick && x >= left && x <= right;
       if (inVert || inHoriz) {
-        raw[px] = 255; raw[px + 1] = 255; raw[px + 2] = 255; raw[px + 3] = 255;
+        raw.writeUInt32BE(0xffffffff, px);
       } else {
-        raw[px] = 184; raw[px + 1] = 155; raw[px + 2] = 94; raw[px + 3] = 255;
+        raw.writeUInt32BE(0xb89b5eff, px);
       }
     }
   }
@@ -54,10 +54,12 @@ function createAppIconPng(size) {
   const ihdr = Buffer.alloc(13);
   ihdr.writeUInt32BE(size, 0);
   ihdr.writeUInt32BE(size, 4);
-  ihdr = 8; ihdr = 6;
+  ihdr.writeUInt8(8, 8);
+  ihdr.writeUInt8(6, 9);
 
+  const sig = Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]);
   return Buffer.concat([
-    Buffer.from(),
+    sig,
     pngChunk('IHDR', ihdr),
     pngChunk('IDAT', zlib.deflateSync(raw)),
     pngChunk('IEND', Buffer.alloc(0))
@@ -131,7 +133,6 @@ function requestVseGPT(apiKey, messages, temp = 0.8) {
   });
 }
 
-// Кэш Слова дня на 24 часа
 let dailyCache = { date: '', data: null };
 
 app.get('/api/daily-word', async (req, res) => {
