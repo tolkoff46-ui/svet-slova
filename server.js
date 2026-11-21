@@ -5,7 +5,6 @@ const app = express();
 
 app.use(express.json());
 
-// Генератор настоящей PNG-иконки нужного размера (192x192 и 512x512)
 function createAppIconPng(size) {
   const crcTable = new Uint32Array(256);
   for (let n = 0; n < 256; n++) {
@@ -55,10 +54,10 @@ function createAppIconPng(size) {
   const ihdr = Buffer.alloc(13);
   ihdr.writeUInt32BE(size, 0);
   ihdr.writeUInt32BE(size, 4);
-  ihdr[8] = 8; ihdr[9] = 6;
+  ihdr = 8; ihdr = 6;
 
   return Buffer.concat([
-    Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]),
+    Buffer.from(),
     pngChunk('IHDR', ihdr),
     pngChunk('IDAT', zlib.deflateSync(raw)),
     pngChunk('IEND', Buffer.alloc(0))
@@ -68,15 +67,8 @@ function createAppIconPng(size) {
 const ICON_192 = createAppIconPng(192);
 const ICON_512 = createAppIconPng(512);
 
-app.get('/icon-192.png', (req, res) => {
-  res.setHeader('Content-Type', 'image/png');
-  res.send(ICON_192);
-});
-
-app.get('/icon-512.png', (req, res) => {
-  res.setHeader('Content-Type', 'image/png');
-  res.send(ICON_512);
-});
+app.get('/icon-192.png', (req, res) => { res.setHeader('Content-Type', 'image/png'); res.send(ICON_192); });
+app.get('/icon-512.png', (req, res) => { res.setHeader('Content-Type', 'image/png'); res.send(ICON_512); });
 
 app.get('/manifest.json', (req, res) => {
   res.setHeader('Content-Type', 'application/manifest+json');
@@ -107,49 +99,90 @@ app.get('/sw.js', (req, res) => {
 
 app.use(express.static(__dirname));
 
-app.post('/api/chat', (req, res) => {
-  const apiKey = (process.env.VSEGPT_KEY || '').trim();
-  if (!apiKey) {
-    return res.status(500).json({ error: 'Ключ VSEGPT_KEY не найден в переменных Amvera' });
+function requestVseGPT(apiKey, messages, temp = 0.8) {
+  return new Promise((resolve, reject) => {
+    const postData = JSON.stringify({
+      model: 'openai/gpt-4o',
+      messages: messages,
+      temperature: temp
+    });
+
+    const options = {
+      hostname: 'api.vsegpt.ru',
+      port: 443,
+      path: '/v1/chat/completions',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Length': Buffer.byteLength(postData)
+      }
+    };
+
+    const request = https.request(options, (response) => {
+      let rawData = '';
+      response.on('data', (chunk) => { rawData += chunk; });
+      response.on('end', () => resolve({ status: response.statusCode, text: rawData }));
+    });
+
+    request.on('error', (err) => reject(err));
+    request.write(postData);
+    request.end();
+  });
+}
+
+// Кэш Слова дня на 24 часа
+let dailyCache = { date: '', data: null };
+
+app.get('/api/daily-word', async (req, res) => {
+  const todayStr = new Date().toLocaleDateString('ru-RU', { timeZone: 'Europe/Moscow' });
+  if (dailyCache.date === todayStr && dailyCache.data) {
+    return res.json(dailyCache.data);
   }
 
-  const postData = JSON.stringify({
-    model: 'openai/gpt-4o',
-    messages: req.body.messages,
-    temperature: 0.8
-  });
-
-  const options = {
-    hostname: 'api.vsegpt.ru',
-    port: 443,
-    path: '/v1/chat/completions',
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${apiKey}`,
-      'Content-Length': Buffer.byteLength(postData)
-    }
+  const apiKey = (process.env.VSEGPT_KEY || '').trim();
+  const fallback = {
+    quote: '«Господь — Пастырь мой; я ни в чем не буду нуждаться: Он покоит меня на злачных пажитях и водит меня к водам тихим.»',
+    source: 'Псалтирь, Псалом 22, стихи 1–2',
+    meaning: 'Когда душа мечется в суете, святитель Иоанн Златоуст напоминает: доверившийся Богу обретает внутренний покой даже посреди житейских бурь.'
   };
 
-  const request = https.request(options, (response) => {
-    let rawData = '';
-    response.on('data', (chunk) => { rawData += chunk; });
-    response.on('end', () => {
-      try {
-        const parsed = JSON.parse(rawData);
-        res.status(response.statusCode).json(parsed);
-      } catch (e) {
-        res.status(502).json({ error: 'VseGPT вернул не JSON. Статус: ' + response.statusCode });
-      }
-    });
-  });
+  if (!apiKey) return res.json(fallback);
 
-  request.on('error', (err) => {
-    res.status(500).json({ error: err.message });
-  });
+  try {
+    const prompt = `Сегодня ${todayStr}. Подбери одно вдохновляющее, глубокое «Слово дня» из Синодального перевода Библии (Евангелие, Псалтирь, Притчи или Послания апостолов — каждый день разное, избегай Мф. 6:34). Пиши только на русском языке без единого иностранного слова. Верни ответ строго в формате JSON без markdown-оберток:
+{"quote":"«Точная цитата в кавычках»","source":"Книга, глава, стих","meaning":"Краткое живое пояснение смысла для сегодняшнего дня со ссылкой на мысль святого отца (2 предложения)."}`;
 
-  request.write(postData);
-  request.end();
+    const result = await requestVseGPT(apiKey, [{ role: 'user', content: prompt }], 0.85);
+    const parsedOuter = JSON.parse(result.text);
+    const content = parsedOuter.choices.at(0).message.content.replace(/```json|```/g, '').trim();
+    const wordObj = JSON.parse(content);
+
+    if (wordObj.quote && wordObj.source && wordObj.meaning) {
+      dailyCache = { date: todayStr, data: wordObj };
+      return res.json(wordObj);
+    }
+    res.json(fallback);
+  } catch (e) {
+    res.json(fallback);
+  }
+});
+
+app.post('/api/chat', async (req, res) => {
+  try {
+    const apiKey = (process.env.VSEGPT_KEY || '').trim();
+    if (!apiKey) return res.status(500).json({ error: 'Ключ VSEGPT_KEY не найден в переменных Amvera' });
+
+    const result = await requestVseGPT(apiKey, req.body.messages, 0.8);
+    try {
+      const parsed = JSON.parse(result.text);
+      res.status(result.status).json(parsed);
+    } catch (e) {
+      res.status(502).json({ error: 'VseGPT вернул не JSON. Статус: ' + result.status });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 app.post('/api/pay', (req, res) => {
@@ -163,7 +196,6 @@ app.post('/api/pay', (req, res) => {
       message: `Автооплата на сумму ${amount} ₽ готовится к запуску. Пока вы можете активировать доступ по коду благодарности.`
     });
   }
-
   res.json({ status: 'ok', amount });
 });
 
