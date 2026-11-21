@@ -34,9 +34,11 @@
         .quote-meaning { font-size: 14px; line-height: 1.5; color: var(--text-secondary); padding-top: 12px; border-top: 1px solid var(--border); }
         .section-title { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
         .section-subtitle { font-size: 14px; color: var(--text-secondary); margin-bottom: 14px; line-height: 1.4; }
-        .limit-bar { display: flex; justify-content: space-between; align-items: center; background: var(--accent-light); border: 1px solid var(--border); padding: 8px 14px; border-radius: 12px; font-size: 12.5px; color: var(--text-primary); margin-bottom: 14px; }
+        .limit-bar { display: flex; justify-content: space-between; align-items: center; background: var(--accent-light); border: 1px solid var(--border); padding: 8px 12px; border-radius: 12px; font-size: 12.5px; color: var(--text-primary); margin-bottom: 14px; gap: 8px; }
         .limit-link { color: var(--accent); font-weight: 600; cursor: pointer; text-decoration: underline; background: none; border: none; font-size: 12.5px; }
         .limit-status-ok { color: #5A8B5E; font-weight: 600; font-size: 12px; }
+        .reset-chat-btn { background: var(--bg-card); border: 1px solid var(--border); color: var(--text-secondary); padding: 4px 9px; border-radius: 8px; font-size: 11.5px; cursor: pointer; white-space: nowrap; }
+        .reset-chat-btn:active { background: var(--accent-light); color: var(--accent); }
         .depth-toggle { display: flex; gap: 8px; margin-bottom: 14px; }
         .depth-btn { flex: 1; padding: 10px 8px; border-radius: 12px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-secondary); font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s; }
         .depth-btn.active { background: var(--accent-light); color: var(--accent); border-color: var(--accent); font-weight: 600; }
@@ -44,6 +46,8 @@
         .topic-chip { background: var(--bg-card); border: 1px solid var(--border); color: var(--text-primary); padding: 8px 14px; border-radius: 20px; font-size: 13px; cursor: pointer; }
         .input-box { width: 100%; background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 14px; font-size: 15px; resize: none; min-height: 90px; margin-bottom: 12px; outline: none; }
         .primary-btn { width: 100%; background: var(--accent); color: white; border: none; border-radius: 14px; padding: 14px; font-size: 15px; font-weight: 600; cursor: pointer; }
+        .home-footer { margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border); font-size: 12px; line-height: 1.5; color: var(--text-secondary); text-align: center; }
+        .home-footer p { margin-bottom: 8px; }
         .chat-messages { display: flex; flex-direction: column; gap: 14px; margin-bottom: 16px; }
         .msg { padding: 16px; border-radius: 18px; font-size: 15px; line-height: 1.6; max-width: 94%; }
         .msg-user { background: var(--accent-light); align-self: flex-end; border-bottom-right-radius: 4px; color: var(--text-primary); }
@@ -114,11 +118,19 @@
             </div>
             <textarea id="home-input" class="input-box" placeholder="Опишите вашу ситуацию или вопрос по Писанию..."></textarea>
             <button class="primary-btn" onclick="startChatFromHome()">Получить слово наставления</button>
+
+            <div class="home-footer">
+                <p>Часть средств от поддержки проекта направляется на прямую адресную помощь нуждающимся людям — покупку продуктов и лекарств лично из рук в руки, без фондов и посредников.</p>
+                <p>«Свет Слова» — это справочник-навигатор по Священному Писанию и святоотеческому наследию. Сервис помогает найти духовную опору, но не заменяет живого общения со священником, участия в Таинствах Церкви и помощи врача.</p>
+            </div>
         </div>
         <div id="screen-chat" class="screen">
             <div class="limit-bar">
-                <span id="limit-text-chat">Бесплатно сегодня: 3 из 3</span>
-                <button class="limit-link" id="limit-btn-chat" onclick="openSupportModal()">Открыть безлимит</button>
+                <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                    <span id="limit-text-chat">Бесплатно сегодня: 3 из 3</span>
+                    <button class="limit-link" id="limit-btn-chat" onclick="openSupportModal()">Открыть безлимит</button>
+                </div>
+                <button class="reset-chat-btn" onclick="resetChat()">↺ Новая тема</button>
             </div>
             <div class="chat-messages" id="chat-box">
                 <div class="msg msg-bot">Здравствуй. Расскажи своими словами, что сейчас на душе или в какой ситуации нужна опора — поговорим спокойно и поищем ответ в Писании и опыте святых отцов.</div>
@@ -304,7 +316,7 @@
     function updateLimitUI() {
         const pro = isPro();
         const rem = getRemainingQuota();
-        const txt = pro ? 'Полный доступ активен (Безлимит)' : `Бесплатно сегодня: ${rem} из ${DAILY_LIMIT}`;
+        const txt = pro ? 'Полный доступ активен' : `Бесплатно сегодня: ${rem} из ${DAILY_LIMIT}`;
         document.getElementById('limit-text-home').textContent = txt;
         document.getElementById('limit-text-chat').textContent = txt;
 
@@ -385,6 +397,11 @@
         if (t === 'fav') renderFavorites();
     }
 
+    function resetChat() {
+        chatHistory = [];
+        document.getElementById('chat-box').innerHTML = '<div class="msg msg-bot">Здравствуй. Начинаем новую беседу. Расскажи своими словами, что сейчас на душе или в какой ситуации нужна опора.</div>';
+    }
+
     function cleanEnglish(str) {
         return str.replace(/\s+[a-zA-Z]{3,}/g, '');
     }
@@ -400,7 +417,7 @@
         return paragraphs.join('');
     }
 
-        function saveFavorite(plainText, btn) {
+    function saveFavorite(plainText, btn) {
         const favs = JSON.parse(localStorage.getItem('svet_favs') || '[]');
         const alreadySaved = favs.some(f => f.text.trim() === plainText.trim());
         if (!alreadySaved) {
